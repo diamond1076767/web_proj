@@ -1,0 +1,236 @@
+<?php 
+
+include('../config/function.php');
+
+if(!isset($_SESSION['productItems'])){
+    $_SESSION['productItems'] = [];
+}
+
+if(!isset($_SESSION['productItemIds'])){
+    $_SESSION['productItemIds'] = [];
+}
+
+if(isset($_POST['addItem'])){
+    $productId = validate($_POST['product_id']);  
+    $quantity = validate($_POST['quantity']);
+    
+    
+    $checkProduct = mysqli_query($con, "SELECT * FROM inventory WHERE _id='$productId' LIMIT 1");
+    if($checkProduct){
+        
+        if(mysqli_num_rows($checkProduct)>0){
+            $row = mysqli_fetch_assoc($checkProduct);
+            if($row['quantity'] < $quantity){
+                redirect('order-create.php', 'Only ' .$row['quantity']. ' quantity available');
+            }
+            
+            $productData = [
+                '_id' => $row['_id'],
+                'categoryID' => $row['categoryID'],
+                'colourID' => $row['colourID'],
+                'title' => $row['title'],
+                'quantity' => $quantity,
+                'price' => $row['cost'],
+                'description' => $row['description'],
+                'image' => $row['image'],                                
+            ];
+            
+            if(!in_array($row['_id'], $_SESSION['productItemIds'])){
+                
+                array_push($_SESSION['productItemIds'], $row['_id']);
+                array_push($_SESSION['productItems'], $productData);
+            }else{
+                foreach($_SESSION['productItems'] as $key => $prodSessionItem){
+                    if($prodSessionItem['_id'] == $row['_id']){
+                        $newQuantity = $prodSessionItem['quantity'] + $quantity;       
+                        
+                        $productData = [
+                            '_id' => $row['_id'],
+                            'categoryID' => $row['categoryID'],
+                            'colourID' => $row['colourID'],
+                            'title' => $row['title'],
+                            'quantity' => $newQuantity,
+                            'price' => $row['cost'],
+                            'description' => $row['description'],
+                            'image' => $row['image'],
+                        ];
+                        $_SESSION['productItems'][$key] = $productData;
+                    }
+                }
+            }
+            redirect('order-create.php', 'Item Added '.$row['title']);
+        }else{
+            redirect('order-create.php', 'No such product found!');
+        }
+    }else{
+        redirect('order-create.php', 'Something Went Wrong!');
+    }
+}
+
+if(isset($_POST['productIncDec'])){
+    $productId = validate($_POST['product_id']);
+    $quantity = validate($_POST['quantity']);
+    
+    $flag = false;
+    foreach($_SESSION['productItems'] as $key => $item){
+        if($item['_id'] == $productId){
+            
+            $flag = true;
+            $_SESSION['productItems'][$key]['quantity'] = $quantity;
+        }
+    }
+    
+    if($flag){
+        jsonResponse(200, 'success', 'Quantity Updated');
+    }else{
+        jsonResponse(500, 'error', 'Something Went Wrong. Please re-fresh');
+    }
+}
+
+if(isset($_POST['proceedToPlaceBtn'])){
+    $phone = validate(encryption($_POST['cphone']));
+    $payment_mode = validate($_POST['payment_mode']);
+    
+    // Checking for Customer
+    $checkCustomer = mysqli_query($con, "SELECT * FROM customer WHERE telephone='$phone' LIMIT 1");
+    if($checkCustomer){
+        if(mysqli_num_rows($checkCustomer)>0){
+            $_SESSION['invoice_no'] = "INV-".rand(111111,999999);
+            $_SESSION['cphone'] = $phone;
+            $_SESSION['payment_mode'] = $payment_mode;
+            jsonResponse(200, 'success', 'Customer Found');
+        }
+        else{
+            $_SESSION['cphone'] = $phone;
+            jsonResponse(404, 'warning', 'Customer Not Found');
+        }
+    }else{
+        jsonResponse(500, 'error', 'Something Went Wrong');
+    }
+}
+
+if(isset($_POST['saveCustomerBtn']))
+{
+    $name = validate($_POST['name']);
+    $company = validate($_POST['company']);
+    $phone = validate($_POST['phone']);
+    $email = validate($_POST['email']);
+    
+    if($name != '' && $phone != '' && $email != ''){
+        
+        $data = [
+            'customerName' => $name,
+            'companyName' => $company,
+            'telephone' => encryption($phone),
+            'email' => encryption($email),
+        ];
+        $result = insert('customer', $data);
+        if($result){
+            jsonResponse(200, 'success', 'Customer Created Successfully');
+        }else{
+            jsonResponse(500, 'error', 'Something Went Wrong');
+        }
+    }else{
+        jsonResponse(422, 'warning', 'Please Fill Required Fields');
+    }
+}
+
+if(isset($_POST['saveOrder'])){
+    $phone = validate($_SESSION['cphone']);
+    $invoice_no = validate($_SESSION['invoice_no']);
+    $payment_mode = validate($_SESSION['payment_mode']);
+    $userID = validate($_SESSION['loggedInUser']['user_id']);
+    
+    $checkCustomer = mysqli_query($con, "SELECT * FROM customer WHERE telephone ='$phone' LIMIT 1");
+    if(!$checkCustomer){
+        jsonResponse(500, 'error', 'Something Went Wrong!');
+    }
+    
+    if(mysqli_num_rows($checkCustomer)>0){
+        $customerData = mysqli_fetch_assoc($checkCustomer);
+        
+        if(!isset($_SESSION['productItems'])){
+            jsonResponse(404, 'warning', 'No Items to place order!');
+        }
+        $sessionProducts = $_SESSION['productItems'];
+        
+        $totalAmount = 0;
+        foreach($sessionProducts as $amtItem){
+            $totalAmount += $amtItem['price'] * $amtItem['quantity'];
+        }
+        
+        $data = [
+            'customerID' => $customerData['_id'],
+            'tracking_no' => rand(11111,99999),
+            'invoice_no' => $invoice_no,
+            'total_amount' => $totalAmount,
+            'order_date' => date('Y-m-d'),
+            'order_status' => 'Order Placed',
+            'payment_mode' => $payment_mode,
+            'userID' => $userID,
+        ];
+        $result = insert('sales_order', $data);
+        $lastOrderId = mysqli_insert_id($con);
+        
+        foreach($sessionProducts as $prodItem){
+            $productId = $prodItem['_id'];
+            $price = $prodItem['price'];
+            $quantity = $prodItem['quantity'];
+            
+            // Inserting order items
+            $dataOrderItem = [
+                'orderID' => $lastOrderId,
+                'inventoryID' => $productId,
+                'cost' => $price,
+                'quantity' => $quantity,
+            ];
+            $orderItemQuery = insert('order_items', $dataOrderItem);
+            
+            // Checking for the quantity and decreasing quantity and making Total Quantity
+            $checkProductQuantityQuery = mysqli_query($con, "SELECT * FROM inventory WHERE _id='$productId'");
+            $productQtyData = mysqli_fetch_assoc($checkProductQuantityQuery);
+            $totalProductQuantity = $productQtyData['quantity'] - $quantity;
+            
+            $dataUpdate = [
+                'quantity' => $totalProductQuantity
+            ];
+            $updateProductQty = update('inventory', $productId, $dataUpdate);
+        }
+        
+        unset($_SESSION['productItemIds']);
+        unset($_SESSION['productItems']);
+        unset($_SESSION['cphone']);
+        unset($_SESSION['payment_mode']);
+        unset($_SESSION['invoice_no']);
+        
+        jsonResponse(200, 'success', 'Order Request Placed Successfully.');
+    }else{
+        jsonResponse(404, 'warning', 'No Customer Found!');
+    }
+}
+
+// Check if the request is for checking existing phone
+if (isset($_POST['checkExistingPhone'])) {
+    $phone = validate($_POST['phone']);
+    $phoneExists = checkExistingPhone($phone);
+    if ($phoneExists) {
+        echo json_encode(['status' => 409, 'message' => 'Phone already exists', 'status_type' => 'warning']);
+    } else {
+        echo json_encode(['status' => 200, 'message' => 'Phone does not exist']);
+    }
+    exit(); // Stop further execution
+}
+
+// Check if the request is for checking existing email
+if (isset($_POST['checkExistingEmail'])) {
+    $email = validate($_POST['email']);
+    $emailExists = checkExistingEmail($email);
+    if ($emailExists) {
+        echo json_encode(['status' => 409, 'message' => 'Email already exists', 'status_type' => 'warning']);
+    } else {
+        echo json_encode(['status' => 200, 'message' => 'Email does not exist']);
+    }
+    exit(); // Stop further execution
+}
+
+?>
