@@ -59,7 +59,7 @@ include("includes/header.php");
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Full Name</label>
-                                    <input type="text" class="form-control" name="fullname" placeholder="Enter Full Name" value="<?= $fullname;?>" required/>
+                                    <input type="text" class="form-control" name="fullname" placeholder="Enter Full Name" value="<?= decryption($fullname)?>" required/>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">

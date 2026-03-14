@@ -15,8 +15,8 @@ function validate($inputData)
 }
 
 function validateInput($input) {
-    $validatedInput = filter_var($input, FILTER_SANITIZE_STRING);
-    return htmlspecialchars(trim($validatedInput), ENT_QUOTES, 'UTF-8');
+    $input = trim((string)$input);
+    return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
 }
 
 // Redirect from 1 page to another page with the message (status)

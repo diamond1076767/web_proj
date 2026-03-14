@@ -169,6 +169,84 @@ include_once ("../config/function.php");
         redirect('admin-edit.php', $result ? 'User Updated Successfully!' : 'Something Went Wrong!');
     }
     
+        if (isset($_POST['resetBtn'])) {
+
+        $pass = validate($_POST['pass']);
+        $conpass = validate($_POST['conpass']);
+        $userID = $_SESSION['user_id'];
+
+        if ($pass == '' || $conpass == '') {
+            redirect('change-password.php', 'Please fill required fields');
+        }
+
+        if ($pass !== $conpass) {
+            redirect('change-password.php', 'Passwords do not match.');
+        }
+
+        if (!isPasswordStrong($pass)) {
+            redirect('change-password.php', 'Password does not meet the requirements:
+            <br>1. At least 8 characters
+            <br>2. One uppercase letter
+            <br>3. One lowercase letter
+            <br>4. One number
+            <br>5. One special character');
+        }
+
+        // Hash password
+        $bcryptpassword = password_hash($pass, PASSWORD_BCRYPT);
+
+        // Update password
+        $data = [
+            'password' => $bcryptpassword
+        ];
+
+        $result = updateData('user', $userID, $data);
+
+        if (!$result) {
+            redirect('change-password.php', 'Something Went Wrong!');
+        }
+
+        // Update login time and first_log
+        $updateQuery = "UPDATE user SET logTime = CURRENT_TIMESTAMP, first_log = 0 WHERE _id = ?";
+        $stmt = mysqli_prepare($con, $updateQuery);
+        mysqli_stmt_bind_param($stmt, "i", $userID);
+        mysqli_stmt_execute($stmt);
+
+        // Get updated user data
+        $query = $con->prepare("SELECT * FROM user WHERE _id = ?");
+        $query->bind_param("i", $userID);
+        $query->execute();
+        $result = $query->get_result();
+        $row = $result->fetch_assoc();
+
+        // Update session
+        $_SESSION['loggedIn'] = true;
+        $_SESSION['loggedInUser'] = [
+            'user_id' => $row['_id'],
+            'username' => $row['userName'],
+            'fullname' => $row['fullName'],
+            'email' => $row['email'],
+            'phone' => $row['telephone'],
+            'dob' => $row['dob'],
+            'roleID' => $row['roleID'],
+            'image' => $row['avatar'],
+        ];
+
+        // Redirect based on role
+        switch ($row['roleID']) {
+            case 1:
+                redirect('admin/index.php', 'Password Changed Successfully');
+                break;
+            case 2:
+                redirect('manager/index.php', 'Password Changed Successfully');
+                break;
+            case 3:
+                redirect('staff/index.php', 'Password Changed Successfully');
+                break;
+            default:
+                redirect('login.php', 'Password Changed Successfully');
+        }
+    }
     if(isset($_POST['saveCategory'])){
         $name = validate($_POST['name']);
         $status = isset($_POST['status']) == true ? 1:0;

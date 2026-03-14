@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-white shadow">
 	<div class="container">
 
-		<a class="navbar-brand" href="#"> TP AMC Sales Inventory Management </a>
+		<a class="navbar-brand" href="#"> SIT Sales Inventory Management </a>
 
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
 			data-bs-target="#navbarSupportedContent"
