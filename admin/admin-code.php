@@ -1,211 +1,172 @@
 <?php
 include_once ("../config/function.php");
 
-if (isset($_POST['saveUser'])) {
-    $roleID = validate($_POST['role_id']);
-    $username = validate($_POST['username']);
-    $fullname = validate($_POST['fullname']);
-    $email = validate($_POST['email']);
-    $password = validate($_POST['password']);
-    $conpassword = validate($_POST['confirmpassword']);
-    $phone = validate($_POST['phone']);
-    $lock_acc = validate($_POST['lock_acc']) == true ? 1:0;
+    if (isset($_POST['createUser'])) {
+        // Collect and sanitize input
+        $inputs = [
+            'roleID' => validate($_POST['role_id'] ?? ''),
+            'username' => validate($_POST['username'] ?? ''),
+            'fullname' => validate($_POST['fullname'] ?? ''),
+            'email' => validate($_POST['email'] ?? ''),
+            'password' => validate($_POST['password'] ?? ''),
+            'conpassword' => validate($_POST['confirmpassword'] ?? ''),
+            'phone' => validate($_POST['phone'] ?? ''),
+            'lock_acc' => isset($_POST['lock_acc']) ? 1 : 0
+        ];
 
-    
-    if ($roleID != '' && $username != '' && $fullname != '' && $email != '' && $password != '' && $conpassword!= '' && $phone != '') {
+        // Check required fields
+        foreach (['roleID','username','fullname','email','password','conpassword','phone'] as $field) {
+            if (empty($inputs[$field])) {
+                redirect('admin-create.php', 'Please fill required fields');
+            }
+        }
 
-        // Check if password match
-        if ($password != $conpassword) {
+        // Password match and strength
+        if ($inputs['password'] !== $inputs['conpassword']) {
             redirect('admin-create.php', 'Passwords do not match.');
         }
-        
-        // Check if the password meets the strength criteria
-        if (!isPasswordStrong($password)) {
-            redirect('admin-create.php', 'Passwords does not meet the requirements: </br>
+        if (!isPasswordStrong($inputs['password'])) {
+            redirect('admin-create.php', 'Password does not meet the requirements:
             1. The password must be at least 8 characters long.</br>
-            2. The password must contain at least one uppercase letter.</br>
-            3. The password must contain at least one lowercase letter.</br>
-            4. The password must contain at least one numeric digit.</br>
-            5. The password must contain at least one special character among the following: !@#$%^&*(),.?":{}|<>');
-        }else{
-            $bcryptpassword = password_hash($password, PASSWORD_BCRYPT);
+                2. The password must contain at least one uppercase letter.</br>
+                3. The password must contain at least one lowercase letter.</br>
+                4. The password must contain at least one numeric digit.</br>
+                5. The password must contain at least one special character among the following: !@#$%^&*(),.?":{}|<>');
         }
-        
-        // Check if username is used by another user
-        $userCheck = mysqli_query($con, "SELECT * FROM user WHERE userName='$username'");
-        if ($userCheck) {
-            if ($userCheck) {
-                if (mysqli_num_rows($userCheck) > 0) {
-                    redirect('admin-create.php', 'Username Already Used By Another User.');
-                }
-            }
-        }
-        
-        // Check if email is used by another user
-        $emailCheck = mysqli_query($con, "SELECT * FROM user WHERE email='$email' LIMIT 1");
-        if ($emailCheck) {
-            if ($emailCheck) {
-                if (mysqli_num_rows($emailCheck) > 0) {
-                    redirect('admin-create.php', 'Email Already Used By Another User.');
-                }else{
-                    $encryptemail = encryption($email);
-                }
+        $bcryptpassword = password_hash($inputs['password'], PASSWORD_BCRYPT);
+
+        // Unique checks
+        $uniqueChecks = [
+            'userName' => ['value'=>$inputs['username'], 'msg'=>'Username Already Used By Another User.'],
+            'email' => ['value'=>$inputs['email'], 'msg'=>'Email Already Used By Another User.'],
+            'telephone' => ['value'=>$inputs['phone'], 'msg'=>'Phone Number Already Used By Another User.']
+        ];
+
+        foreach ($uniqueChecks as $column => $info) {
+            $check = mysqli_query($con, "SELECT * FROM user WHERE $column='{$info['value']}' LIMIT 1");
+            if ($check && mysqli_num_rows($check) > 0) {
+                redirect('admin-create.php', $info['msg']);
             }
         }
 
-        if (!isValidEmailFormat($email)) {
-            redirect('admin-create.php', 'Invalid Email Address. Format: <email>@amc.tp.edu.sg');
-        }
+        // Encrypt sensitive fields
+        $encryptEmail = encryption($inputs['email']);
+        $encryptPhone = encryption($inputs['phone']);
+        $encryptFname = encryption($inputs['fullname']);
 
-        // Check if phone number is numeric
-        if (!is_numeric($phone)) {
+        // Validate formats
+        if (!isValidEmailFormat($inputs['email'])) {
+            redirect('admin-create.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
+        }
+        if (!is_numeric($inputs['phone'])) {
             redirect('admin-create.php', 'Invalid Phone Number. Please enter a numeric value.');
         }
-        
-        // Check if phone number is used by another user
-        $phoneCheck = mysqli_query($con, "SELECT * FROM user WHERE telephone='$phone'");
-        if ($phoneCheck) {
-            if ($phoneCheck) {
-                if (mysqli_num_rows($phoneCheck) > 0) {
-                    redirect('admin-create.php', 'Phone Number Already Used By Another User.');
-                }else{
-                    $encryptphone = encryption($phone);
-                }
-            }
-        }
-       
-        if (!isAlphabeticFullName($fullname)) {
-            redirect('admin-create.php', 'Please enter alphabetic characters.');
+        if (!isAlphabeticFullName($inputs['fullname'])) {
+            redirect('admin-create.php', 'Full Name must contain alphabetic characters only.');
         }
 
+        // Prepare data and insert
         $data = [
-            'roleID' => $roleID,
-            'userName' => $username,
-            'fullName' => $fullname,
-            'email' => $encryptemail,
+            'roleID' => $inputs['roleID'],
+            'userName' => $inputs['username'],
+            'fullName' => $encryptFname,
+            'email' => $encryptEmail,
             'password' => $bcryptpassword,
-            'telephone' => $encryptphone,
-            'lock_acc' => $lock_acc
+            'telephone' => $encryptPhone,
+            'lock_acc' => $inputs['lock_acc']
         ];
+
         $result = insert('user', $data);
-
-        if ($result) {
-            redirect('admin.php', 'User Created Successfully!');
-        } else {
-            redirect('admin-create.php', 'Something Went Wrong!');
-        }
-    } else {
-        redirect('admin-create.php', 'Please fill required fields');
+        redirect($result ? 'admin.php' : 'admin-create.php', $result ? 'User Created Successfully!' : 'Something Went Wrong!');
     }
-}
 
-if (isset($_POST['updateUser'])) 
-    {
+    if (isset($_POST['updateUser'])) {
         $userId = validate($_POST['userId']);
-        
         $userData = getById('user', $userId);
+
         if ($userData['status'] != 200) {
             redirect('admin-edit.php', 'Please fill required fields.');
         }
-    
-        $username = validate($_POST['username']);
-        $fullname = validate($_POST['fullname']);
-        $email = validate($_POST['email']);
-        $password = validate($_POST['password']);
-        $conpassword = validate($_POST['confirmpassword']);
-        $phone = validate($_POST['phone']);
-        $lock_acc = isset($_POST['lock_acc']) == true ? 1:0;
 
-        
-        // Check if username is used by another user
-        $userCheck = mysqli_query($con, "SELECT * FROM user WHERE userName='$username' AND _id!='$userId'");
-        if ($userCheck) {
-            if ($userCheck) {
-                if (mysqli_num_rows($userCheck) > 0) {
-                    redirect('admin-edit.php', 'Username Already Used By Another User.');
-                }
+        // Collect and sanitize input
+        $inputs = [
+            'username' => validate($_POST['username'] ?? ''),
+            'fullname' => validate($_POST['fullname'] ?? ''),
+            'email' => validate($_POST['email'] ?? ''),
+            'password' => validate($_POST['password'] ?? ''),
+            'conpassword' => validate($_POST['confirmpassword'] ?? ''),
+            'phone' => validate($_POST['phone'] ?? ''),
+            'lock_acc' => isset($_POST['lock_acc']) ? 1 : 0
+        ];
+
+        // Required fields check
+        foreach (['username','fullname','email','phone'] as $field) {
+            if (empty($inputs[$field])) {
+                redirect('admin-edit.php', 'Please fill required fields.');
             }
         }
 
-        if (!isValidEmailFormat($email)) {
-            redirect('admin-edit.php', 'Invalid Email Address. Format: <email>@amc.tp.edu.sg');
-        }
-        
-        // Check if email is used by another user
-        $emailCheck = mysqli_query($con, "SELECT * FROM user WHERE email='$email' AND _id!='$userId'");
-        if ($emailCheck) {
-            if ($emailCheck) {
-                if (mysqli_num_rows($emailCheck) > 0) {
-                    redirect('admin-edit.php','Email Already Used By Another User');
-                }else{
-                    $encryptemail = encryption($email);
-                }
-            }
-        }
-        
-        // Check if phone number is numeric
-        if (!is_numeric($phone)) {
-            redirect('admin-edit.php', 'Invalid Phone Number. Please enter a numeric value.');
-        }
-        
-        // Check if phone number is used by another user
-        $phoneCheck = mysqli_query($con, "SELECT * FROM user WHERE telephone='$phone' AND _id!='$userId'");
-        if ($phoneCheck) {
-            if ($phoneCheck) {
-                if (mysqli_num_rows($phoneCheck) > 0) {
-                    redirect('admin-edit.php', 'Phone Number Already Used By Another User.');
-                }else{
-                    $encryptphone = encryption($phone);
-                }
-            }
-        }
-        
-        if ($password != '' && $conpassword!='') {
-            // Check if password match
-            if ($password != $conpassword) {
+        // Password handling
+        if (!empty($inputs['password']) && !empty($inputs['conpassword'])) {
+            if ($inputs['password'] !== $inputs['conpassword']) {
                 redirect('admin-edit.php', 'Passwords do not match.');
-            }else{
-                // Check if the password meets the strength criteria
-                if (!isPasswordStrong($password)) {
-                    redirect('admin-create.php', 'Passwords does not meet the requirements: </br>
-            1. The password must be at least 8 characters long.</br>
-            2. The password must contain at least one uppercase letter.</br>
-            3. The password must contain at least one lowercase letter.</br>
-            4. The password must contain at least one numeric digit.</br>
-            5. The password must contain at least one special character among the following: !@#$%^&*(),.?":{}|<>');
-                }else{
-                    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-                }
-            }           
+            }
+            if (!isPasswordStrong($inputs['password'])) {
+                redirect('admin-edit.php', 'Password does not meet strength requirements.');
+            }
+            $hashedPassword = password_hash($inputs['password'], PASSWORD_BCRYPT);
         } else {
             $hashedPassword = $userData['data']['password'];
         }
-        
-        if ($lock_acc == 0) {
-            // Reset failed attempts to 0
-            $resetAttemptsQuery = "UPDATE user SET failed_attempts = 0 WHERE _id = $userId";
-            mysqli_query($con, $resetAttemptsQuery);
+
+        // Validate email and phone formats
+        if (!isValidEmailFormat($inputs['email'])) {
+            redirect('admin-edit.php', 'Invalid Email Address. Format: <email>@amc.tp.edu.sg');
+        }
+        if (!is_numeric($inputs['phone'])) {
+            redirect('admin-edit.php', 'Invalid Phone Number. Please enter a numeric value.');
+        }
+        if (!isAlphabeticFullName($inputs['fullname'])) {
+            redirect('admin-edit.php', 'Full Name must contain alphabetic characters only.');
         }
 
-        if ($username != '' && $fullname != '' && $email != '') {
-            $data = [
-                'userName' => $username,
-                'fullName' => $fullname,
-                'email' => $encryptemail,
-                'password' => $hashedPassword,
-                'telephone' => $encryptphone,
-                'lock_acc' => $lock_acc,
-            ];
-            $result = updateData('user', $userId, $data);
+        // Unique field checks
+        $uniqueFields = [
+            'userName' => ['value' => $inputs['username'], 'msg' => 'Username Already Used By Another User.'],
+            'email' => ['value' => $inputs['email'], 'msg' => 'Email Already Used By Another User.'],
+            'telephone' => ['value' => $inputs['phone'], 'msg' => 'Phone Number Already Used By Another User.']
+        ];
 
-            if ($result) {
-                redirect('admin-edit.php', 'User Updated Successfully!');
-            } else {
-                redirect('admin-edit.php', 'Something Went Wrong!');
+        foreach ($uniqueFields as $column => $info) {
+            $check = mysqli_query($con, "SELECT * FROM user WHERE $column='{$info['value']}' AND _id != '$userId' LIMIT 1");
+            if ($check && mysqli_num_rows($check) > 0) {
+                redirect('admin-edit.php', $info['msg']);
             }
-        } else {
-            redirect('admin-edit.php', 'Please fill required fields.');
         }
+
+        // Encrypt email and phone
+        $encryptEmail = encryption($inputs['email']);
+        $encryptPhone = encryption($inputs['phone']);
+        $encryptFname = encryption($inputs['fullname']);
+
+        // Reset failed attempts if account unlocked
+        if ($inputs['lock_acc'] == 0) {
+            mysqli_query($con, "UPDATE user SET failed_attempts = 0 WHERE _id = $userId");
+        }
+
+        // Prepare data and update
+        $data = [
+            'userName' => $inputs['username'],
+            'fullName' => $encryptFname,
+            'email' => $encryptEmail,
+            'password' => $hashedPassword,
+            'telephone' => $encryptPhone,
+            'lock_acc' => $inputs['lock_acc']
+        ];
+
+        $result = updateData('user', $userId, $data);
+
+        redirect('admin-edit.php', $result ? 'User Updated Successfully!' : 'Something Went Wrong!');
     }
     
     if(isset($_POST['saveCategory'])){

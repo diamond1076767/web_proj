@@ -53,7 +53,7 @@
                     				</div>
                     				<div class="col-md-6 mb-3">
                     					<label for="">Full Name *</label>
-                    					<input type="text" name="fullname" required value="<?= $userData['data']['fullName'];?>" class="form-control" />
+                    					<input type="text" name="fullname" required value="<?= decryption($userData['data']['fullName']);?>" class="form-control" />
                     				</div>
                     				<div class="col-md-6 mb-3">
                     					<label for="">Email *</label>

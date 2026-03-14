@@ -9,6 +9,7 @@ require 'dbcon.php';
 function validate($inputData)
 {
     global $con;
+    $inputData = $inputData ?? '';
     $validatedData = mysqli_real_escape_string($con, $inputData);
     return trim($validatedData);
 }
@@ -435,19 +436,6 @@ function logoutSession() {
     
 }
 
-function saveSecretToDatabase($userId, $secret) {
-    global $con;
-
-    $secret = encryption($secret);
-    // Prepare and execute a query to save the secret to the database
-    $query = "UPDATE user SET auth_secret=? WHERE _id=?";
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("si", $secret, $userId);
-    $stmt->execute();
-
-    // Close the statement
-    $stmt->close();
-}
 
 function isAlphabeticFullName($fullName) {
     // Remove spaces and check if all characters are alphabetic
@@ -465,8 +453,8 @@ function isValidEmailFormat($email) {
     $emailParts = explode('@', $email);
     $domain = end($emailParts);
 
-    // Check if the domain is "@amc.tp.edu.sg"
-    return (strtolower($domain) === 'amc.tp.edu.sg');
+    // Check if the domain is "@sit.singaporetech.edu.sg"
+    return (strtolower($domain) === 'sit.singaporetech.edu.sg');
 }
 
 ?>

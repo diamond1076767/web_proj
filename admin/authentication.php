@@ -18,17 +18,21 @@ if (isset($_SESSION['loggedIn'])) {
     // Get the result
     $result = mysqli_stmt_get_result($stmt);
     
-    // Check if the user exists
+    // If user doesn't exist or is banned, destroy session and redirect to login
     if (mysqli_num_rows($result) == 0) {
-        // Logout and redirect if the user doesn't exist
-        logoutAndRedirect('../login.php', 'Access Denied!');
-    } else {
-        $row = mysqli_fetch_assoc($result);
-        // Check if the user's account is banned
-        if ($row['lock_acc'] === 1) {
-            // Logout and redirect if the user's account is banned
-            logoutAndRedirect('../login.php', 'Your account has been banned! Please contact admin.');
-        }
+        session_unset();
+        session_destroy();
+        header("Location: ../login.php");
+        exit();
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    if ($row['lock_acc'] == 1) {
+        session_unset();
+        session_destroy();
+        header("Location: ../login.php");
+        exit();
     }
    
     // Define a map for role-based redirection
@@ -45,5 +49,6 @@ if (isset($_SESSION['loggedIn'])) {
 } else {
     // Redirect to the login page if the user is not logged in
     redirect('../login.php', "Login to continue..");
+    exit();
 }
 ?>

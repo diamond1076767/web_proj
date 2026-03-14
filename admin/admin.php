@@ -108,7 +108,7 @@
     			    <tr>
 						<td><?= $userItem['user_id']?></td>
 						<td><?= $userItem['userName']?></td>
-						<td><?= $userItem['fullName']?></td>
+						<td><?= decryption($userItem['fullName'])?></td>
 						<td><?= decryption($userItem['telephone'])?></td>
 						<td><?= decryption($userItem['email'])?></td>
 												<td>

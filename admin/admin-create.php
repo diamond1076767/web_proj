@@ -63,10 +63,10 @@
     				<div class="col-md-6 mb-3">
     					<label for="">Lock Account</label>
     					<br/>
-    					<input type="checkbox" name="lock_acc" style="width:30px;height:30px;" />
+    					<input type="checkbox" name="lock_acc" value="1" style="width:30px;height:30px;">
     				</div>
     				<div class="col-md-6 mb-3 text-end">
-    					<button type="submit" name="saveUser" class="btn btn-primary" style="margin-top:10px">Submit</button>
+    					<button type="submit" name="createUser" class="btn btn-primary" style="margin-top:10px">Submit</button>
     				</div>
 				</div>
 			</form>
