@@ -49,9 +49,6 @@ if (isset($_POST['loginBtn'])){
         redirect('login.php', 'Invalid Password');
     }
 
-    // Successful login
-    session_regenerate_id(true); // prevent session fixation
-
     $stmtReset = mysqli_prepare($con, "UPDATE user SET failed_attempts = 0 WHERE _id = ?");
     mysqli_stmt_bind_param($stmtReset, "i", $row['_id']);
     mysqli_stmt_execute($stmtReset);

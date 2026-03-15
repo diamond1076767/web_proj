@@ -785,27 +785,30 @@ if (isset($_POST['resetBtn'])) {
     }
     
     if (isset($_POST['updateProfile'])) {
+
     $userID = validate($_SESSION['loggedInUser']['user_id']);
     $userData = getById('user', $userID);
-    
+
     if (!$userData) {
         redirect('profile.php', 'No Such User Found');
     }
-    
+
+    // Validate inputs
     $fullname = validate($_POST['fullname']);
     $telephone = validate($_POST['telephone']);
     $email = validate($_POST['email']);
-    $dob = validate($_POST['dob']);
-    
+    $dob = $_POST['dob'] ?? null;
+    $dob = !empty($dob) ? $dob : NULL; // Properly store NULL if empty
+
     // Encrypt fullname
     if (!isAlphabeticFullName($fullname)) {
         redirect('profile-edit.php', 'Please enter alphabetic characters.');
     } else {
         $encryptFullname = encryption($fullname);
     }
-    
+
     // Image upload handling
-    if ($_FILES['image']['size'] > 0) {
+    if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
         $path = "../assets/profile";
         $image_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
         $filename = time() . '.' . $image_ext;
@@ -822,12 +825,12 @@ if (isset($_POST['resetBtn'])) {
     } else {
         $finalImage = $_SESSION['loggedInUser']['image'];
     }
-    
+
     // Telephone validation & encryption
     if (!is_numeric($telephone)) {
         redirect('profile-edit.php', 'Invalid Phone Number. Please enter a numeric value.');
     }
-    $phoneCheck = mysqli_query($con, "SELECT * FROM customer WHERE telephone='$telephone' AND _id != '$userID'");
+    $phoneCheck = mysqli_query($con, "SELECT * FROM user WHERE telephone='$telephone' AND _id != '$userID'");
     if ($phoneCheck && mysqli_num_rows($phoneCheck) > 0) {
         redirect('profile-edit.php', 'Phone Number Already Used By Another User.');
     } else {
@@ -845,19 +848,20 @@ if (isset($_POST['resetBtn'])) {
         $encryptemail = encryption($email);
     }
 
-    // Prepare data for update
+    // Prepare data array for update
     $data = [
         'fullname' => $encryptFullname,
         'telephone' => $encryptphone,
         'email' => $encryptemail,
-        'dob' => $dob,
+        'dob' => $dob,       // NULL if empty
         'avatar' => $finalImage,
     ];
-    
+
+    // Update user in database using fixed updateData function
     $result = updateData('user', $userID, $data);
-    
+
     if ($result) {
-        // Update session with decrypted fullname for display
+        // Update session with latest info
         $_SESSION['loggedInUser']['fullname'] = $encryptFullname;
         $_SESSION['loggedInUser']['phone'] = $encryptphone;
         $_SESSION['loggedInUser']['email'] = $encryptemail;

@@ -82,23 +82,27 @@ function update($tableName, $_id, $data){
 
 // Update user data using this function
 function updateData($tableName, $_id, $data){
-    
     global $con;
     
     $table = validate($tableName);
     $_id = validate($_id);
     
-    $updateDataString = "";
+    $updateDataParts = [];
     
     foreach($data as $column => $value){
-        
-        $updateDataString .= $column.'='."'$value',";
+        if ($value === NULL) {
+            $updateDataParts[] = "$column = NULL"; // Proper NULL without quotes
+        } else {
+            $escapedValue = mysqli_real_escape_string($con, $value);
+            $updateDataParts[] = "$column = '$escapedValue'";
+        }
     }
     
-    $finalUpdateData = substr(trim($updateDataString),0,-1);
+    $updateDataString = implode(", ", $updateDataParts);
     
-    $query = "UPDATE $table SET $finalUpdateData, updated_at = CURRENT_TIMESTAMP WHERE _id='$_id'";
+    $query = "UPDATE $table SET $updateDataString, updated_at = CURRENT_TIMESTAMP WHERE _id='$_id'";
     $result = mysqli_query($con, $query);
+    
     return $result;
 }
 
