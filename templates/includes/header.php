@@ -1,6 +1,6 @@
 <?php 
 require '../config/function.php';
-require 'authentication.php';
+require 'functions/authentication.php';
 
 // Determine role title
 $roleTitle = "Dashboard";

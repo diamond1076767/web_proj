@@ -86,172 +86,167 @@ include_once ("../config/function.php");
     }
 
     if (isset($_POST['updateUser'])) {
-        $userId = validate($_POST['userId']);
-        $userData = getById('user', $userId);
+    $userId = validate($_POST['userId']);
+    $userData = getById('user', $userId);
 
-        if ($userData['status'] != 200) {
+    if ($userData['status'] != 200) {
+        redirect('admin-edit.php', 'Please fill required fields.');
+    }
+
+    // Collect and sanitize input
+    $inputs = [
+        'username' => validate($_POST['username'] ?? ''),
+        'fullname' => validate($_POST['fullname'] ?? ''),
+        'email' => validate($_POST['email'] ?? ''),
+        'password' => validate($_POST['password'] ?? ''),
+        'conpassword' => validate($_POST['confirmpassword'] ?? ''),
+        'phone' => validate($_POST['phone'] ?? ''),
+        'dob' => $_POST['dob'] ?? null, // Keep as null if not passed
+        'lock_acc' => isset($_POST['lock_acc']) ? 1 : 0
+    ];
+
+    // Required fields check
+    foreach (['username','fullname','email','phone'] as $field) {
+        if (empty($inputs[$field])) {
             redirect('admin-edit.php', 'Please fill required fields.');
         }
-
-        // Collect and sanitize input
-        $inputs = [
-            'username' => validate($_POST['username'] ?? ''),
-            'fullname' => validate($_POST['fullname'] ?? ''),
-            'email' => validate($_POST['email'] ?? ''),
-            'password' => validate($_POST['password'] ?? ''),
-            'conpassword' => validate($_POST['confirmpassword'] ?? ''),
-            'phone' => validate($_POST['phone'] ?? ''),
-            'lock_acc' => isset($_POST['lock_acc']) ? 1 : 0
-        ];
-
-        // Required fields check
-        foreach (['username','fullname','email','phone'] as $field) {
-            if (empty($inputs[$field])) {
-                redirect('admin-edit.php', 'Please fill required fields.');
-            }
-        }
-
-        // Password handling
-        if (!empty($inputs['password']) && !empty($inputs['conpassword'])) {
-            if ($inputs['password'] !== $inputs['conpassword']) {
-                redirect('admin-edit.php', 'Passwords do not match.');
-            }
-            if (!isPasswordStrong($inputs['password'])) {
-                redirect('admin-edit.php', 'Password does not meet strength requirements.');
-            }
-            $hashedPassword = password_hash($inputs['password'], PASSWORD_BCRYPT);
-        } else {
-            $hashedPassword = $userData['data']['password'];
-        }
-
-        // Validate email and phone formats
-        if (!isValidEmailFormat($inputs['email'])) {
-            redirect('admin-edit.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
-        }
-        if (!is_numeric($inputs['phone'])) {
-            redirect('admin-edit.php', 'Invalid Phone Number. Please enter a numeric value.');
-        }
-        if (!isAlphabeticFullName($inputs['fullname'])) {
-            redirect('admin-edit.php', 'Full Name must contain alphabetic characters only.');
-        }
-
-        // Unique field checks
-        $uniqueFields = [
-            'userName' => ['value' => $inputs['username'], 'msg' => 'Username Already Used By Another User.'],
-            'email' => ['value' => $inputs['email'], 'msg' => 'Email Already Used By Another User.'],
-            'telephone' => ['value' => $inputs['phone'], 'msg' => 'Phone Number Already Used By Another User.']
-        ];
-
-        foreach ($uniqueFields as $column => $info) {
-            $check = mysqli_query($con, "SELECT * FROM user WHERE $column='{$info['value']}' AND _id != '$userId' LIMIT 1");
-            if ($check && mysqli_num_rows($check) > 0) {
-                redirect('admin-edit.php', $info['msg']);
-            }
-        }
-
-        // Encrypt email and phone
-        $encryptEmail = encryption($inputs['email']);
-        $encryptPhone = encryption($inputs['phone']);
-        $encryptFname = encryption($inputs['fullname']);
-
-        // Reset failed attempts if account unlocked
-        if ($inputs['lock_acc'] == 0) {
-            mysqli_query($con, "UPDATE user SET failed_attempts = 0 WHERE _id = $userId");
-        }
-
-        // Prepare data and update
-        $data = [
-            'userName' => $inputs['username'],
-            'fullName' => $encryptFname,
-            'email' => $encryptEmail,
-            'password' => $hashedPassword,
-            'telephone' => $encryptPhone,
-            'lock_acc' => $inputs['lock_acc']
-        ];
-
-        $result = updateData('user', $userId, $data);
-
-        redirect('admin-edit.php', $result ? 'User Updated Successfully!' : 'Something Went Wrong!');
     }
-    
-        if (isset($_POST['resetBtn'])) {
 
-        $pass = validate($_POST['pass']);
-        $conpass = validate($_POST['conpass']);
-        $userID = $_SESSION['user_id'];
-
-        if ($pass == '' || $conpass == '') {
-            redirect('change-password.php', 'Please fill required fields');
+    // Password handling
+    if (!empty($inputs['password']) && !empty($inputs['conpassword'])) {
+        if ($inputs['password'] !== $inputs['conpassword']) {
+            redirect('admin-edit.php', 'Passwords do not match.');
         }
-
-        if ($pass !== $conpass) {
-            redirect('change-password.php', 'Passwords do not match.');
+        if (!isPasswordStrong($inputs['password'])) {
+            redirect('admin-edit.php', 'Password does not meet strength requirements.');
         }
+        $hashedPassword = password_hash($inputs['password'], PASSWORD_BCRYPT);
+    } else {
+        $hashedPassword = $userData['data']['password'];
+    }
 
-        if (!isPasswordStrong($pass)) {
-            redirect('change-password.php', 'Password does not meet the requirements:
-            <br>1. At least 8 characters
-            <br>2. One uppercase letter
-            <br>3. One lowercase letter
-            <br>4. One number
-            <br>5. One special character');
-        }
+    // Validate email and phone formats
+    if (!isValidEmailFormat($inputs['email'])) {
+        redirect('admin-edit.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
+    }
+    if (!is_numeric($inputs['phone'])) {
+        redirect('admin-edit.php', 'Invalid Phone Number. Please enter a numeric value.');
+    }
+    if (!isAlphabeticFullName($inputs['fullname'])) {
+        redirect('admin-edit.php', 'Full Name must contain alphabetic characters only.');
+    }
 
-        // Hash password
-        $bcryptpassword = password_hash($pass, PASSWORD_BCRYPT);
+    // Unique field checks
+    $uniqueFields = [
+        'userName' => ['value' => $inputs['username'], 'msg' => 'Username Already Used By Another User.'],
+        'email' => ['value' => $inputs['email'], 'msg' => 'Email Already Used By Another User.'],
+        'telephone' => ['value' => $inputs['phone'], 'msg' => 'Phone Number Already Used By Another User.']
+    ];
 
-        // Update password
-        $data = [
-            'password' => $bcryptpassword
-        ];
-
-        $result = updateData('user', $userID, $data);
-
-        if (!$result) {
-            redirect('change-password.php', 'Something Went Wrong!');
-        }
-
-        // Update login time and first_log
-        $updateQuery = "UPDATE user SET logTime = CURRENT_TIMESTAMP, first_log = 0 WHERE _id = ?";
-        $stmt = mysqli_prepare($con, $updateQuery);
-        mysqli_stmt_bind_param($stmt, "i", $userID);
-        mysqli_stmt_execute($stmt);
-
-        // Get updated user data
-        $query = $con->prepare("SELECT * FROM user WHERE _id = ?");
-        $query->bind_param("i", $userID);
-        $query->execute();
-        $result = $query->get_result();
-        $row = $result->fetch_assoc();
-
-        // Update session
-        $_SESSION['loggedIn'] = true;
-        $_SESSION['loggedInUser'] = [
-            'user_id' => $row['_id'],
-            'username' => $row['userName'],
-            'fullname' => $row['fullName'],
-            'email' => $row['email'],
-            'phone' => $row['telephone'],
-            'dob' => $row['dob'],
-            'roleID' => $row['roleID'],
-            'image' => $row['avatar'],
-        ];
-
-        // Redirect based on role
-        switch ($row['roleID']) {
-            case 1:
-                redirect('admin/index.php', 'Password Changed Successfully');
-                break;
-            case 2:
-                redirect('manager/index.php', 'Password Changed Successfully');
-                break;
-            case 3:
-                redirect('staff/index.php', 'Password Changed Successfully');
-                break;
-            default:
-                redirect('login.php', 'Password Changed Successfully');
+    foreach ($uniqueFields as $column => $info) {
+        $check = mysqli_query($con, "SELECT * FROM user WHERE $column='{$info['value']}' AND _id != '$userId' LIMIT 1");
+        if ($check && mysqli_num_rows($check) > 0) {
+            redirect('admin-edit.php', $info['msg']);
         }
     }
+
+    // Encrypt email, phone, fullname
+    $encryptEmail = encryption($inputs['email']);
+    $encryptPhone = encryption($inputs['phone']);
+    $encryptFname = encryption($inputs['fullname']);
+
+    // Reset failed attempts if account unlocked
+    if ($inputs['lock_acc'] == 0) {
+        mysqli_query($con, "UPDATE user SET failed_attempts = 0 WHERE _id = $userId");
+    }
+
+   // Prepare data array
+   $data = [
+    'userName' => $inputs['username'],
+    'fullName' => $encryptFname,
+    'email' => $encryptEmail,
+    'password' => $hashedPassword,
+    'telephone' => $encryptPhone,
+    'lock_acc' => $inputs['lock_acc']
+    ];
+
+    // Only include dob if it's not null
+    if (!is_null($inputs['dob'])) {
+        $data['dob'] = $inputs['dob'];
+    }
+
+    // Update user
+    $result = updateData('user', $userId, $data);
+    redirect('templates/index.php', $result ? 'User Updated Successfully!' : 'Something Went Wrong!');
+    }
+
+if (isset($_POST['resetBtn'])) {
+
+    $pass = validate($_POST['pass']);
+    $conpass = validate($_POST['conpass']);
+    $userID = $_SESSION['user_id'];
+
+    if ($pass == '' || $conpass == '') {
+        redirect('change-password.php', 'Please fill required fields');
+    }
+
+    if ($pass !== $conpass) {
+        redirect('change-password.php', 'Passwords do not match.');
+    }
+
+    if (!isPasswordStrong($pass)) {
+        redirect('change-password.php', 'Password does not meet the requirements:
+        <br>1. At least 8 characters
+        <br>2. One uppercase letter
+        <br>3. One lowercase letter
+        <br>4. One number
+        <br>5. One special character');
+    }
+
+    // Hash password
+    $bcryptpassword = password_hash($pass, PASSWORD_BCRYPT);
+
+    // Update password
+    $data = [
+        'password' => $bcryptpassword
+    ];
+
+    $result = updateData('user', $userID, $data);
+
+    if (!$result) {
+        redirect('change-password.php', 'Something Went Wrong!');
+    }
+
+    // Update login time and first_log
+    $updateQuery = "UPDATE user SET logTime = CURRENT_TIMESTAMP, first_log = 0 WHERE _id = ?";
+    $stmt = mysqli_prepare($con, $updateQuery);
+    mysqli_stmt_bind_param($stmt, "i", $userID);
+    mysqli_stmt_execute($stmt);
+
+    // Get updated user data
+    $query = $con->prepare("SELECT * FROM user WHERE _id = ?");
+    $query->bind_param("i", $userID);
+    $query->execute();
+    $result = $query->get_result();
+    $row = $result->fetch_assoc();
+
+    // Update session
+    $_SESSION['loggedIn'] = true;
+    $_SESSION['loggedInUser'] = [
+        'user_id' => $row['_id'],
+        'username' => $row['userName'],
+        'fullname' => $row['fullName'],
+        'email' => $row['email'],
+        'phone' => $row['telephone'],
+        'dob' => $row['dob'],
+        'roleID' => $row['roleID'],
+        'image' => $row['avatar'],
+    ];
+
+    // Redirect to shared template index
+    redirect('templates/index.php', 'Password Changed Successfully');
+    }
+
     if(isset($_POST['saveCategory'])){
         $name = validate($_POST['name']);
         $status = isset($_POST['status']) == true ? 1:0;
@@ -289,67 +284,67 @@ include_once ("../config/function.php");
     }
     
     if(isset($_POST['saveProduct'])){
+
+    $category_id = validate($_POST['category_id']);
+    $colour_id = validate($_POST['colour_id']);
+    $name = validate($_POST['name']);
+    $description = validate($_POST['description']);
         
-        $category_id = validate($_POST['category_id']);
-        $colour_id = validate($_POST['colour_id']);
-        $name = validate($_POST['name']);
-        $description = validate($_POST['description']);
-        
-        $price = validate($_POST['price']);
-        $quantity = validate($_POST['quantity']);
+    $price = validate($_POST['price']);
+    $quantity = validate($_POST['quantity']);
         $status = isset($_POST['status']) == true ? 1:0;
-        
+
         if($_FILES['image']['size']>0)
         {
             $path = "../assets/uploads/products";
             $image_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
             
             $filename = time().'.'.$image_ext;
-            
+
             move_uploaded_file($_FILES['image']['tmp_name'], $path."/".$filename);
-            
+
             $finalImage = "assets/uploads/products/".$filename;
         }else{
             
             $finalImage = "";
-        }
-        
-        $data = [
-            'categoryID' => $category_id,
-            'colourID' => $colour_id,
-            'title' => $name,
-            'quantity' => $quantity,
-            'cost' => $price,
-            'description' => $description,
+    }
+
+    $data = [
+        'categoryID' => $category_id,
+        'colourID' => $colour_id,
+        'title' => $name,
+        'quantity' => $quantity,
+        'cost' => $price,
+        'description' => $description,
             'image' => $finalImage,
-            'status' => $status
-        ];
+        'status' => $status
+    ];
         $result = insert('inventory', $data);
-        
+
         if ($result) {
             redirect('inventory.php', 'Product Created Successfully!');
         } else {
             redirect('inventory-create.php', 'Something Went Wrong!');
-        }
     }
+}
     
     
     if(isset($_POST['updateProduct'])){
-        $product_id = validate($_POST['product_id']);
-        $productData = getById('inventory', $product_id);
-        if(!$productData){
-            redirect('inventory.php', 'No Such Product Found');
-        }
+    $product_id = validate($_POST['product_id']);
+    $productData = getById('inventory', $product_id);
+    if(!$productData){
+        redirect('inventory.php', 'No Such Product Found');
+    }
+
+    $category_id = validate($_POST['category_id']);
+    $colour_id = validate($_POST['colour_id']);
+    $name = validate($_POST['name']);
+    $description = validate($_POST['description']);
         
-        $category_id = validate($_POST['category_id']);
-        $colour_id = validate($_POST['colour_id']);
-        $name = validate($_POST['name']);
-        $description = validate($_POST['description']);
-        
-        $price = validate($_POST['price']);
-        $quantity = validate($_POST['quantity']);
+    $price = validate($_POST['price']);
+    $quantity = validate($_POST['quantity']);
         $status = isset($_POST['status']) == true ? 1:0;
-        
+
         if($_FILES['image']['size']>0)
         {
             $path = "../assets/uploads/products";
@@ -368,26 +363,26 @@ include_once ("../config/function.php");
         }else{
             
             $finalImage = $productData['data']['image'];
-        }
-        
-        $data = [
-            'categoryID' => $category_id,
-            'colourID' => $colour_id,
-            'title' => $name,
-            'quantity' => $quantity,
-            'cost' => $price,
-            'description' => $description,
-            'image' => $finalImage,
-            'status' => $status
-        ];
-        $result = update('inventory', $product_id, $data);
-        
-        if ($result) {
-            redirect('inventory-edit.php', 'Product Updated Successfully!');
-        } else {
-            redirect('inventory-edit.php', 'Something Went Wrong!');
-        }
     }
+
+    $data = [
+        'categoryID' => $category_id,
+        'colourID' => $colour_id,
+        'title' => $name,
+        'quantity' => $quantity,
+        'cost' => $price,
+        'description' => $description,
+            'image' => $finalImage,
+        'status' => $status
+    ];
+    $result = update('inventory', $product_id, $data);
+
+    if ($result) {
+        redirect('inventory-edit.php', 'Product Updated Successfully!');
+    } else {
+        redirect('inventory-edit.php', 'Something Went Wrong!');
+    }
+}
     
     if (isset($_POST['saveUserRequest'])) {
         $userID = validate($_SESSION['loggedInUser']['user_id']);

@@ -22,7 +22,7 @@ if (isset($_SESSION['loggedIn'])) {
     if (mysqli_num_rows($result) == 0) {
         session_unset();
         session_destroy();
-        header("Location: ../login.php");
+        header("Location: ../../login.php");
         exit();
     }
 
@@ -31,12 +31,12 @@ if (isset($_SESSION['loggedIn'])) {
     if ($row['lock_acc'] == 1) {
         session_unset();
         session_destroy();
-        header("Location: ../login.php");
+        header("Location: ../../login.php");
         exit();
     }
     } else {
     // Redirect to the login page if the user is not logged in
-    redirect('../login.php', "Login to continue..");
+    redirect('../../login.php', "Login to continue..");
     exit();
 }
 ?>
