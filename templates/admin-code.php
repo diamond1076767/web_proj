@@ -372,9 +372,10 @@ if (isset($_POST['resetBtn'])) {
         'quantity' => $quantity,
         'cost' => $price,
         'description' => $description,
-            'image' => $finalImage,
+        'imageID' => $imageID,
         'status' => $status
     ];
+
     $result = update('inventory', $product_id, $data);
 
     if ($result) {
