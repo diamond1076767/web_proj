@@ -24,7 +24,7 @@ function redirect($url, $status)
 {
     $_SESSION['status'] = $status;
     header('Location: ' . $url);
-    exit(0);
+    exit();
 }
 
 function alertMessage()

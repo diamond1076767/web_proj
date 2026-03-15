@@ -2,18 +2,7 @@
 
 if(isset($_SESSION['loggedIn'])){
     $roleID = validate($_SESSION['loggedInUser']['roleID']);
-    
-        switch ($roleID) {
-            case 1:
-                header("Location: admin/index.php");
-                exit();
-            case 2:
-                header("Location: manager/index.php");
-                exit();
-            case 3:
-                header("Location: staff/index.php");
-                exit();
-    }
+    header("Location: templates/index.php");
 }
 ?>
 
