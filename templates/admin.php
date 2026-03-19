@@ -1,6 +1,6 @@
-<?php include("includes/header.php"); 
+<?php include("includes/header.php");
 $sessionRole = $_SESSION['loggedInUser']['roleID'];
-allowedRole([1,2]);
+allowedRole([1, 2]);
 ?>
 <div class="container-fluid px-4">
 	<div class="card mt-4 shadow-sm">
@@ -59,7 +59,7 @@ allowedRole([1,2]);
 		</div>
 		<div class="card-body">
 			<?php alertMessage(); ?>
-											
+
 			<?php
 			$createDate = isset($_GET['date']) ? validate($_GET['date']) : '';
 			$roleStatus = isset($_GET['role_status']) ? validate($_GET['role_status']) : '';
@@ -130,19 +130,20 @@ allowedRole([1,2]);
 										}
 										?>
 									</td>
+									<?php if ($sessionRole == 1): ?>
+										<td>
 
-									<td>
-										<form action="admin-edit.php" method="post" style="display: inline-block; margin-right: 1px;">
-											<input type="hidden" name="userId" value="<?= validate($userItem['_id']) ?>">
-											<button type="submit" class="btn btn-success btn-sm">Edit</button>
-										</form>
-										<?php if ($sessionRole == 1): ?>
-										<form action="admin-delete.php" method="post" style="display: inline-block; margin-right: 1px;">
-											<input type="hidden" name="userId" value="<?= validate($userItem['_id']) ?>">
-											<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this user?')">Delete</button>
-										</form>
-										<?php endif; ?>
-									</td>
+											<form action="admin-edit.php" method="post" style="display: inline-block; margin-right: 1px;">
+												<input type="hidden" name="userId" value="<?= validate($userItem['_id']) ?>">
+												<button type="submit" class="btn btn-success btn-sm">Edit</button>
+											</form>
+											<form action="admin-delete.php" method="post" style="display: inline-block; margin-right: 1px;">
+												<input type="hidden" name="userId" value="<?= validate($userItem['_id']) ?>">
+												<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this user?')">Delete</button>
+											</form>
+
+										</td>
+									<?php endif; ?>
 								</tr>
 							<?php endforeach; ?>
 						</tbody>

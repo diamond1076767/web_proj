@@ -1,9 +1,6 @@
 <?php 
 include('../config/function.php');
 allowedRole([1,2,3]);
-$redirectPage = ($_SESSION['loggedInUser']['roleID'] == 3) 
-    ? 'order-request-create.php' 
-    : 'order-create.php';
 if(!isset($_SESSION['productItems'])){
     $_SESSION['productItems'] = [];
 }
@@ -13,6 +10,13 @@ if(!isset($_SESSION['productItemIds'])){
 }
 
 if(isset($_POST['addItem'])){
+
+    $roleID = $_SESSION['loggedInUser']['roleID'] ?? null;
+
+    $redirectPage = ($roleID == 3) 
+    ? 'order-request-create.php' 
+    : 'order-create.php';
+    
     $productId = validate($_POST['product_id']);  
     $quantity = validate($_POST['quantity']);
     
@@ -95,18 +99,38 @@ if(isset($_POST['proceedToPlaceBtn'])){
     
     // Checking for Customer
     $checkCustomer = mysqli_query($con, "SELECT * FROM customer WHERE telephone='$phone' LIMIT 1");
+    
     if($checkCustomer){
         if(mysqli_num_rows($checkCustomer)>0){
+
             $_SESSION['invoice_no'] = "INV-".rand(111111,999999);
             $_SESSION['cphone'] = $phone;
             $_SESSION['payment_mode'] = $payment_mode;
-            jsonResponse(200, 'success', 'Customer Found');
-        }
-        else{
+
+            // ✅ GET ROLE FROM SESSION (SAFE)
+            $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
+
+            // ✅ DECIDE REDIRECT HERE (BACKEND)
+            $redirect = ($roleID == 3) 
+                ? 'order-request-summary.php' 
+                : 'order-summary.php';
+
+            // ✅ RETURN REDIRECT TO JS
+            echo json_encode([
+                'status' => 200,
+                'status_type' => 'success',
+                'message' => 'Customer Found',
+                'redirect' => $redirect
+            ]);
+            exit;
+
+        } else {
+
             $_SESSION['cphone'] = $phone;
+
             jsonResponse(404, 'warning', 'Customer Not Found');
         }
-    }else{
+    } else {
         jsonResponse(500, 'error', 'Something Went Wrong');
     }
 }

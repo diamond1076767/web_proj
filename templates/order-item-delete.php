@@ -1,6 +1,8 @@
 <?php
 require '../config/function.php';
-$redirectPage = ($_SESSION['loggedInUser']['roleID'] == 3) 
+$roleID = $_SESSION['loggedInUser']['roleID'] ?? null;
+
+$redirectPage = ($roleID == 3) 
     ? 'order-request-create.php' 
     : 'order-create.php';
 allowedRole([1,2,3]);

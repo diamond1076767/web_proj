@@ -4,6 +4,10 @@ include("includes/header.php");
 allowedRole([3]);
 // Add Customer Modal
 ?>
+<script>
+    var roleID = <?= $_SESSION['loggedInUser']['roleID'] ?? 0 ?>;
+</script>
+
 <div class="modal fade" id="addCustomerModal" data-bs-backdrop='static' data-bs-keyboard='false' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <!-- Modal Dialog -->
     <div class="modal-dialog">

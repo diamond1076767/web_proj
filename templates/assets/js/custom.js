@@ -85,16 +85,11 @@ $(document).ready(function(){
 			var res = JSON.parse(response);
 
 			if(res.status == 200){
-				var roleID = $('#roleID').val();
 
-				if(roleID == 3){
-					window.location.href = 'order-request-summary.php';
-				} else {
-					window.location.href = 'order-summary.php';
-				}
+				// Let backend tell frontend where to go
+				window.location.href = res.redirect;
 
 			} else if(res.status == 404){
-
 				swal(res.message, res.message, res.status_type, {
 					buttons: {
 						catch: {
@@ -105,12 +100,9 @@ $(document).ready(function(){
 					}
 				})
 				.then((value) => {
-					switch(value){
-						case "catch":
-							$('#c_phone').val(cphone);
-							$('#addCustomerModal').modal('show');
-							break;
-						default:
+					if(value === "catch"){
+						$('#c_phone').val(cphone);
+						$('#addCustomerModal').modal('show');
 					}
 				});
 
