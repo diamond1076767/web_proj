@@ -139,6 +139,7 @@ if(isset($_POST['saveOrder'])){
     $invoice_no = validate($_SESSION['invoice_no']);
     $payment_mode = validate($_SESSION['payment_mode']);
     $userID = validate($_SESSION['loggedInUser']['user_id']);
+    $roleID = $_SESSION['loggedInUser']['roleID'];
     
     $checkCustomer = mysqli_query($con, "SELECT * FROM customer WHERE telephone ='$phone' LIMIT 1");
     if(!$checkCustomer){
@@ -157,52 +158,92 @@ if(isset($_POST['saveOrder'])){
         foreach($sessionProducts as $amtItem){
             $totalAmount += $amtItem['price'] * $amtItem['quantity'];
         }
-        
-        $data = [
-            'customerID' => $customerData['_id'],
-            'tracking_no' => rand(11111,99999),
-            'invoice_no' => $invoice_no,
-            'total_amount' => $totalAmount,
-            'order_date' => date('Y-m-d'),
-            'order_status' => 'Order Placed',
-            'payment_mode' => $payment_mode,
-            'userID' => $userID,
-        ];
-        $result = insert('sales_order', $data);
-        $lastOrderId = mysqli_insert_id($con);
-        
-        foreach($sessionProducts as $prodItem){
-            $productId = $prodItem['_id'];
-            $price = $prodItem['price'];
-            $quantity = $prodItem['quantity'];
-            
-            // Inserting order items
-            $dataOrderItem = [
-                'orderID' => $lastOrderId,
-                'inventoryID' => $productId,
-                'cost' => $price,
-                'quantity' => $quantity,
+
+        // =========================
+        // ROLE-BASED LOGIC
+        // =========================
+
+        if($roleID == 1 || $roleID == 2){
+            // ===== ADMIN / MANAGER → DIRECT ORDER =====
+            $data = [
+                'customerID' => $customerData['_id'],
+                'tracking_no' => rand(11111,99999),
+                'invoice_no' => $invoice_no,
+                'total_amount' => $totalAmount,
+                'order_date' => date('Y-m-d'),
+                'order_status' => 'Order Placed',
+                'payment_mode' => $payment_mode,
+                'userID' => $userID,
             ];
-            $orderItemQuery = insert('order_items', $dataOrderItem);
-            
-            // Checking for the quantity and decreasing quantity and making Total Quantity
-            $checkProductQuantityQuery = mysqli_query($con, "SELECT * FROM inventory WHERE _id='$productId'");
-            $productQtyData = mysqli_fetch_assoc($checkProductQuantityQuery);
-            $totalProductQuantity = $productQtyData['quantity'] - $quantity;
-            
-            $dataUpdate = [
-                'quantity' => $totalProductQuantity
+            $result = insert('sales_order', $data);
+            $lastOrderId = mysqli_insert_id($con);
+
+            foreach($sessionProducts as $prodItem){
+                $productId = $prodItem['_id'];
+                $price = $prodItem['price'];
+                $quantity = $prodItem['quantity'];
+                
+                $dataOrderItem = [
+                    'orderID' => $lastOrderId,
+                    'inventoryID' => $productId,
+                    'cost' => $price,
+                    'quantity' => $quantity,
+                ];
+                insert('order_items', $dataOrderItem);
+                
+                // Update inventory
+                $checkProductQuantityQuery = mysqli_query($con, "SELECT * FROM inventory WHERE _id='$productId'");
+                $productQtyData = mysqli_fetch_assoc($checkProductQuantityQuery);
+                $totalProductQuantity = $productQtyData['quantity'] - $quantity;
+                
+                $dataUpdate = [
+                    'quantity' => $totalProductQuantity
+                ];
+                update('inventory', $productId, $dataUpdate);
+            }
+
+            $message = 'Order Placed Successfully';
+
+        } else {
+            // ===== STAFF → REQUEST ORDER =====
+            $data = [
+                'customerID' => $customerData['_id'],
+                'total_amount' => $totalAmount,
+                'status' => 'Pending',
+                'payment_mode' => $payment_mode,
+                'userID' => $userID,
             ];
-            $updateProductQty = update('inventory', $productId, $dataUpdate);
+            $result = insert('request_order', $data);
+            $lastOrderId = mysqli_insert_id($con);
+
+            foreach($sessionProducts as $prodItem){
+                $productId = $prodItem['_id'];
+                $price = $prodItem['price'];
+                $quantity = $prodItem['quantity'];
+                
+                $dataOrderItem = [
+                    'orderID' => $lastOrderId,
+                    'inventoryID' => $productId,
+                    'cost' => $price,
+                    'quantity' => $quantity,
+                ];
+                insert('order_request_items', $dataOrderItem);
+            }
+
+            $message = 'Order Request Placed Successfully';
         }
-        
+
+        // =========================
+        // CLEAR SESSION
+        // =========================
         unset($_SESSION['productItemIds']);
         unset($_SESSION['productItems']);
         unset($_SESSION['cphone']);
         unset($_SESSION['payment_mode']);
         unset($_SESSION['invoice_no']);
         
-        jsonResponse(200, 'success', 'Order Placed Successfully');
+        jsonResponse(200, 'success', $message);
+
     }else{
         jsonResponse(404, 'warning', 'No Customer Found!');
     }
