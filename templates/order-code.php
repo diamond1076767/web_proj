@@ -16,7 +16,7 @@ if(isset($_POST['addItem'])){
     $redirectPage = ($roleID == 3) 
     ? 'order-request-create.php' 
     : 'order-create.php';
-    
+
     $productId = validate($_POST['product_id']);  
     $quantity = validate($_POST['quantity']);
     
