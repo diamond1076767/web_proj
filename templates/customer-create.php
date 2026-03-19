@@ -12,7 +12,7 @@ allowedRole([1,2,3]);?>
             <?php alertMessage();?>
 
             <!-- Customer Form -->
-            <form action="manager-code.php" method="POST">
+            <form action="admin-code.php" method="POST">
 
                 <div class="row">
                     <!-- Customer Name Input -->

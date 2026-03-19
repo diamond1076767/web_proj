@@ -16,7 +16,7 @@ $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
 					</div> Dashboard
 				</a>
 
-				<?php if ($roleID == 1 && $roleID == 2): ?>
+				<?php if ($roleID == 1 || $roleID == 2): ?>
 				<a class="nav-link <?= $page == 'order-create.php' ? 'active' : ''; ?>" href="order-create.php">
 					<div class="sb-nav-link-icon">
 						<i class="fas fa-boxes"></i>
@@ -30,8 +30,8 @@ $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
 					</div> Orders
 				</a>
 
-				<?php if ($roleID == 2): ?>
-					<!-- Manager only -->
+				<?php if ($roleID == 2 || $roleID == 3): ?>
+					<!-- Manager only and Staff -->
 					<a class="nav-link <?= $page == 'order-request.php' ? 'active' : ''; ?>" href="order-request.php">
 						<div class="sb-nav-link-icon">
 							<i class="fas fa-bell"></i>

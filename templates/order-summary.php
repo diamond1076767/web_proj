@@ -2,7 +2,7 @@
 include('includes/header.php');
 
 if(!isset($_SESSION['productItems'])){
-    echo '<script> window.location.href = "order-create.php"; </script>';
+    echo '<script> window.location.href = $redirectPage; </script>';
 }
 allowedRole([1,2]);
 ?>
@@ -123,16 +123,16 @@ allowedRole([1,2]);
 						    					    echo "No Color Found";
 						    					}
 						    					?></td>
-						    					<td style="border-bottom: 1px solid #ccc;"><?= number_format($row['price'],0); ?></td>
+						    					<td style="border-bottom: 1px solid #ccc;"><?= number_format($row['price'],2); ?></td>
 						    					<td style="border-bottom: 1px solid #ccc;"><?= $row['quantity']; ?></td>
 						    					<td style="border-bottom: 1px solid #ccc;" class="fw-bold">
-						    						<?= number_format($row['price']*$row['quantity'],0) ?>
+						    						<?= number_format($row['price']*$row['quantity'],2) ?>
 						    					</td>
 						    				</tr>
 						    				<?php endforeach;?>
 						    				<tr>
 						    					<td colspan="4" align="end" style="font-weight: bold;">Grand Total: </td>
-						    					<td colspan="1" style="font-weight: bold;"><?= number_format($totalAmount, 0); ?></td>
+						    					<td colspan="1" style="font-weight: bold;"><?= number_format($totalAmount, 2); ?></td>
 						    				</tr>
 						    				<tr>
 						    					<td colspan="5">Payment Mode: <?= $_SESSION['payment_mode'];?></td>

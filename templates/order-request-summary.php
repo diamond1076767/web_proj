@@ -128,17 +128,17 @@ allowedRole([2,3]);
                                                     echo validate($colorName !== 'Unknown Color' ? $colorName : 'No Color Found');
                                                 ?></td>
 
-                                                <td style="border-bottom: 1px solid #ccc;"><?= validate(number_format($row['price'], 0)); ?></td>
+                                                <td style="border-bottom: 1px solid #ccc;"><?= validate(number_format($row['price'], 2)); ?></td>
                                                 <td style="border-bottom: 1px solid #ccc;"><?= validate($row['quantity']); ?></td>
                                                 <td style="border-bottom: 1px solid #ccc;" class="fw-bold">
-                                                    <?= validate(number_format($row['price'] * $row['quantity'], 0)) ?>
+                                                    <?= validate(number_format($row['price'] * $row['quantity'], 2)) ?>
                                                 </td>
                                             </tr>
                                         <?php } ?>
                                         <!-- Grand total row -->
                                         <tr>
                                             <td colspan="4" align="end" style="font-weight: bold;">Grand Total: </td>
-                                            <td colspan="1" style="font-weight: bold;"><?= number_format($totalAmount, 0); ?></td>
+                                            <td colspan="1" style="font-weight: bold;"><?= number_format($totalAmount, 2); ?></td>
                                         </tr>
                                         <!-- Payment mode row -->
                                         <tr>

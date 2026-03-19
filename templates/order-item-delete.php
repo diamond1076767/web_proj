@@ -1,5 +1,8 @@
 <?php
 require '../config/function.php';
+$redirectPage = ($_SESSION['loggedInUser']['roleID'] == 3) 
+    ? 'order-request-create.php' 
+    : 'order-create.php';
 allowedRole([1,2,3]);
 $paraResult = checkParamId('index');
 if(is_numeric($paraResult)){
@@ -10,13 +13,13 @@ if(is_numeric($paraResult)){
         unset($_SESSION['productItems'][$indexValue]);
         unset($_SESSION['productItemIds'][$indexValue]);
         
-        redirect('order-create.php', 'Item Removed');
+        redirect($redirectPage, 'Item Removed');
     }else{
-        redirect('order-create.php', 'There is no item');
+        redirect($redirectPage, 'There is no item');
     }
     
 }else{
-    redirect('order-create.php', 'param not numeric');
+    redirect($redirectPage, 'param not numeric');
 }
 
 ?>

@@ -138,7 +138,7 @@ allowedRole([1,2]);
     				    					<button class="input-group-text increment">+</button>
     				    				</div>
     				    			</td>
-    				    			<td><?= number_format($item['price'] * $item['quantity'], 0);?></td>
+    				    			<td><?= number_format($item['price'] * $item['quantity'], 2);?></td>
         				    		<td>
         				    			<a href="order-item-delete.php?index=<?= $key; ?>" class="btn btn-danger">Remove</a>
         				    		</td>

@@ -1,6 +1,9 @@
 <?php 
 include('../config/function.php');
 allowedRole([1,2,3]);
+$redirectPage = ($_SESSION['loggedInUser']['roleID'] == 3) 
+    ? 'order-request-create.php' 
+    : 'order-create.php';
 if(!isset($_SESSION['productItems'])){
     $_SESSION['productItems'] = [];
 }
@@ -20,7 +23,7 @@ if(isset($_POST['addItem'])){
         if(mysqli_num_rows($checkProduct)>0){
             $row = mysqli_fetch_assoc($checkProduct);
             if($row['quantity'] < $quantity){
-                redirect('order-create.php', 'Only ' .$row['quantity']. ' quantity available');
+                redirect($redirectPage, 'Only ' .$row['quantity']. ' quantity available');
             }
             
             $productData = [
@@ -57,12 +60,12 @@ if(isset($_POST['addItem'])){
                     }
                 }
             }
-            redirect('order-create.php', 'Item Added '.$row['title']);
+            redirect($redirectPage, 'Item Added '.$row['title']);
         }else{
-            redirect('order-create.php', 'No such product found!');
+            redirect($redirectPage, 'No such product found!');
         }
     }else{
-        redirect('order-create.php', 'Something Went Wrong!');
+        redirect($redirectPage, 'Something Went Wrong!');
     }
 }
 

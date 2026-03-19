@@ -2,30 +2,35 @@ $(document).ready(function(){
 	
 	 alertify.set('notifier','position', 'top-right');
 	
-	$(document).on('click','.increment', function(){
-		var $quantityInput = $(this).closest('.qtyBox').find('.qty');
-		var productId = $(this).closest('.qtyBox').find('.prodId').val();	
-		var currentValue = parseInt($quantityInput.val());
-		
-		if(!isNaN(currentValue)){
-			var qtyVal = currentValue + 1;
-			$quantityInput.val(qtyVal);
-			quantityIncDec(productId, qtyVal);
-		}
-	});
-	
-	$(document).on('click','.decrement', function(){
-		var $quantityInput = $(this).closest('.qtyBox').find('.qty');
-		var productId = $(this).closest('.qtyBox').find('.prodId').val();
-		
-		var currentValue = parseInt($quantityInput.val());
-		
-		if(!isNaN(currentValue) && currentValue>1){
-			var qtyVal = currentValue - 1;
-			$quantityInput.val(qtyVal);
-			quantityIncDec(productId, qtyVal);
-		}
-	});
+	$(document).on('click', '.increment, .decrement', function() {
+    var $qtyBox = $(this).closest('.qtyBox');
+    var $quantityInput = $qtyBox.find('.qty');
+    var productId = $qtyBox.find('.prodId').val();
+    var currentValue = parseFloat($quantityInput.val());
+    if(isNaN(currentValue)) currentValue = 0;
+
+    // Increment or decrement by 1
+    var step = 1;
+
+    if($(this).hasClass('increment')){
+        currentValue += step;
+    } else {
+        currentValue -= step;
+        if(currentValue < step) currentValue = step; // min quantity
+    }
+
+    // Update input
+    $quantityInput.val(currentValue.toFixed(2));
+
+    // Update total price in this row
+    var $row = $(this).closest('tr');
+    var price = parseFloat($row.find('td:nth-child(3)').text()); // price column
+    var totalPrice = price * currentValue;
+    $row.find('.totalPrice').text(totalPrice.toFixed(2));
+
+    // Send to server
+    quantityIncDec(productId, currentValue);
+});
 	
 	function quantityIncDec(prodId, qty){
 		$.ajax({
@@ -60,7 +65,7 @@ $(document).ready(function(){
 			return false;
 		}
 		
-		if(cphone == '' && !$.isNumeric(cphone)){
+		if(cphone == '' || !$.isNumeric(cphone)){
 			
 			swal("Enter Phone Number","Enter Valid Phone Number","warning");
 			return false;
@@ -77,33 +82,42 @@ $(document).ready(function(){
 			url: "order-code.php",
 			data: data,
 			success: function(response){
-				var res = JSON.parse(response);
-				if(res.status == 200){
+			var res = JSON.parse(response);
+
+			if(res.status == 200){
+				var roleID = $('#roleID').val();
+
+				if(roleID == 3){
+					window.location.href = 'order-request-summary.php';
+				} else {
 					window.location.href = 'order-summary.php';
-				}else if(res.status == 404){
-					swal(res.message, res.message,res.status_type,{
-						buttons: {
-							catch: {
-								text: "Add Customer",
-								value: "catch"
-							},
-							cancel: "Cancel"
-						}
-					})
-					.then((value) => {
-						switch(value){
-							case "catch":
-								$('#c_phone').val(cphone);
-								$('#addCustomerModal').modal('show');
-								//console.log('Pop the customer add modal');
-								break;
-							default:
-						}
-					});
-				}else{
-					swal(res.message, res.message,res.status_type);
 				}
+
+			} else if(res.status == 404){
+
+				swal(res.message, res.message, res.status_type, {
+					buttons: {
+						catch: {
+							text: "Add Customer",
+							value: "catch"
+						},
+						cancel: "Cancel"
+					}
+				})
+				.then((value) => {
+					switch(value){
+						case "catch":
+							$('#c_phone').val(cphone);
+							$('#addCustomerModal').modal('show');
+							break;
+						default:
+					}
+				});
+
+			} else {
+				swal(res.message, res.message, res.status_type);
 			}
+		}
 				
 		});
 		

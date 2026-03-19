@@ -1,4 +1,4 @@
-<?php 
+<?php
 include('includes/header.php');
 allowedRole([2,3]);
 
@@ -43,16 +43,15 @@ $orders = mysqli_query($con, $query);
                     <form action="" method="GET">
                         <div class="row g-1">
                             <div class="col-md-4">
-                                <input type="date" 
-                                    name="date" 
+                                <input type="date"
+                                    name="date"
                                     class="form-control"
-                                    value="<?= htmlspecialchars($createDate); ?>"
-                                />
+                                    value="<?= htmlspecialchars($createDate); ?>" />
                             </div>
                             <div class="col-md-4">
                                 <select name="request_status" class="form-select">
                                     <option value="">Select Request Status</option>
-                                    <?php foreach(['Pending', 'Approved', 'Declined'] as $status): ?>
+                                    <?php foreach (['Pending', 'Approved', 'Declined'] as $status): ?>
                                         <option value="<?= $status ?>" <?= $requestStatus == $status ? 'selected' : ''; ?>>
                                             <?= $status ?>
                                         </option>
@@ -72,7 +71,7 @@ $orders = mysqli_query($con, $query);
         <div class="card-body">
             <?php alertMessage(); ?>
 
-            <?php if($orders && mysqli_num_rows($orders) > 0): ?>
+            <?php if ($orders && mysqli_num_rows($orders) > 0): ?>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered align-items-center">
                         <thead>
@@ -87,13 +86,13 @@ $orders = mysqli_query($con, $query);
                             </tr>
                         </thead>
                         <tbody>
-                            <?php while($orderItem = mysqli_fetch_assoc($orders)): ?>
+                            <?php while ($orderItem = mysqli_fetch_assoc($orders)): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($orderItem['customerName']); ?></td>
                                     <td><?= htmlspecialchars(decryption($orderItem['telephone'])); ?></td>
                                     <td><?= htmlspecialchars($orderItem['payment_mode']); ?></td>
                                     <td>
-                                        <?php 
+                                        <?php
                                         // Fetch requester username securely
                                         $userID = validate($orderItem['userID']);
                                         $stmt = mysqli_prepare($con, "SELECT userName FROM user WHERE _id = ?");
@@ -113,20 +112,28 @@ $orders = mysqli_query($con, $query);
                                         </form>
 
                                         <?php if ($orderItem['status'] == 'Pending'): ?>
-                                            <form action="order-request-approve.php" method="post" style="display:inline-block;">
-                                                <input type="hidden" name="requestId" value="<?= validate($orderItem['request_id']); ?>">
-                                                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve this request?')">Approve</button>
-                                            </form>
 
-                                            <form action="order-request-decline.php" method="post" style="display:inline-block;">
-                                                <input type="hidden" name="requestId" value="<?= validate($orderItem['request_id']); ?>">
-                                                <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Decline this request?')">Decline</button>
-                                            </form>
-                                        <?php else: ?>
-                                            <form action="order-request-delete.php" method="post" style="display:inline-block;">
-                                                <input type="hidden" name="requestId" value="<?= validate($orderItem['request_id']); ?>">
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this request?')">Delete</button>
-                                            </form>
+                                            <?php if (isset($_SESSION['loggedInUser']['roleID']) && $_SESSION['loggedInUser']['roleID'] == 2): ?>
+                                                <form action="order-request-approve.php" method="post" style="display:inline-block;">
+                                                    <input type="hidden" name="requestId" value="<?= validate($orderItem['request_id']); ?>">
+                                                    <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve this request?')">Approve</button>
+                                                </form>
+
+                                                <form action="order-request-decline.php" method="post" style="display:inline-block;">
+                                                    <input type="hidden" name="requestId" value="<?= validate($orderItem['request_id']); ?>">
+                                                    <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Decline this request?')">Decline</button>
+                                                </form>
+                                            <?php endif; ?>
+
+                                        <?php elseif ($orderItem['status'] == 'Approved' || $orderItem['status'] == 'Declined'): ?>
+
+                                            <?php if (isset($_SESSION['loggedInUser']['roleID']) && $_SESSION['loggedInUser']['roleID'] == 2): ?>
+                                                <form action="order-request-delete.php" method="post" style="display:inline-block;">
+                                                    <input type="hidden" name="requestId" value="<?= validate($orderItem['request_id']); ?>">
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this request?')">Delete</button>
+                                                </form>
+                                            <?php endif; ?>
+
                                         <?php endif; ?>
                                     </td>
                                 </tr>

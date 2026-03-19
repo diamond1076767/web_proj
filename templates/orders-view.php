@@ -143,13 +143,13 @@ $_SESSION['orderID'] = $_POST['orderId'];
 													<?= validate($orderItemRow['colourName']) ?>
 												</td>
 												<td width="15%" class="fw-bold text-center">
-													<?= validate(number_format($orderItemRow['orderItemPrice'], 0)) ?>
+													<?= validate(number_format($orderItemRow['orderItemPrice'], 2)) ?>
 												</td>
 												<td width="15%" class="fw-bold text-center">
 													<?= validate($orderItemRow['orderItemQuantity']) ?>
 												</td>
 												<td width="15%" class="fw-bold text-center">
-													<?= validate(number_format($orderItemRow['orderItemPrice'] * $orderItemRow['orderItemQuantity'], 0)) ?>
+													<?= validate(number_format($orderItemRow['orderItemPrice'] * $orderItemRow['orderItemQuantity'], 2)) ?>
 												</td>
 											</tr>
 										<?php endforeach; ?>
@@ -157,7 +157,7 @@ $_SESSION['orderID'] = $_POST['orderId'];
 										<tr>
 											<!-- Display total price row -->
 											<td colspan="2" class="text-end fw-bold">Total Price: </td>
-											<td colspan="3" class="text-end fw-bold">SGD <?= validate(number_format($orderItemRow['total_amount'], 0)); ?></td>
+											<td colspan="3" class="text-end fw-bold">SGD <?= validate(number_format($orderItemRow['total_amount'], 2)); ?></td>
 										</tr>
 									</tbody>
 								</table>

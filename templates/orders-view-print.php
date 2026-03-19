@@ -127,16 +127,16 @@ allowedRole([1,2,3]);?>
                                                         echo "No Color Found";
                                                     }
                                                     ?></td>
-                                                <td style="border-bottom: 1px solid #ccc;"><?= validate(number_format($row['orderItemPrice'], 0)); ?></td>
+                                                <td style="border-bottom: 1px solid #ccc;"><?= validate(number_format($row['orderItemPrice'], 2)); ?></td>
                                                 <td style="border-bottom: 1px solid #ccc;"><?= validate($row['orderItemQuantity']); ?></td>
                                                 <td style="border-bottom: 1px solid #ccc;" class="fw-bold">
-                                                    <?= validate(number_format($row['orderItemPrice'] * $row['orderItemQuantity'], 0)) ?>
+                                                    <?= validate(number_format($row['orderItemPrice'] * $row['orderItemQuantity'], 2)) ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
                                         <tr>
                                             <td colspan="5" align="end" style="font-weight: bold;">Grand Total: </td>
-                                            <td colspan="1" style="font-weight: bold;"><?= validate(number_format($row['total_amount'], 0)); ?></td>
+                                            <td colspan="1" style="font-weight: bold;"><?= validate(number_format($row['total_amount'], 2)); ?></td>
                                         </tr>
                                         <tr>
                                             <td colspan="5">Payment Mode: <?= validate($row['payment_mode']); ?></td>

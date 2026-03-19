@@ -155,7 +155,7 @@ allowedRole([3]);
                                             <button class="input-group-text increment">+</button>
                                         </div>
                                     </td>
-                                    <td><?= number_format($item['price'] * $item['quantity'], 0); ?></td>
+                                    <td class="totalPrice"><?= number_format($item['price'] * $item['quantity'], 2); ?></td>
                                     <td>
                                         <!-- Remove Item Button -->
                                         <a href="order-item-delete.php?index=<?= $key; ?>" class="btn btn-danger">Remove</a>
@@ -187,6 +187,7 @@ allowedRole([3]);
                         <div class="col-md-4">
                             <!-- Proceed to Place Order Button -->
                             <br />
+                            <input type="hidden" id="roleID" value="<?= $_SESSION['loggedInUser']['roleID']; ?>">
                             <button type="button" class="btn btn-warning w-100 proceedToPlace">Proceed to place order</button>
                         </div>
                     </div>

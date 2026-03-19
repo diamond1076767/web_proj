@@ -10,7 +10,7 @@ allowedRole([1,2,3]);?>
 		</div>
 		<div class="card-body">
 			<?php alertMessage();?>
-			<form action="staff-code.php" method="POST">
+			<form action="admin-code.php" method="POST">
 			
 				<?php 
 				if (isset($_POST['cusId'])) {
