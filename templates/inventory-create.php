@@ -1,8 +1,6 @@
 <?php include("includes/header.php");
-if (!isset($_SESSION['loggedInUser']['roleID']) || !in_array($_SESSION['loggedInUser']['roleID'], [1,2])) {
-    redirect('index.php', 'Access Denied. Admin or Manager only.');
-    exit();
-}?>
+allowedRole([1,2]);
+?>
 
 <div class="container-fluid px-4">
 	<div class="card mt-4 shadow-sm">

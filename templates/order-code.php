@@ -1,7 +1,6 @@
 <?php 
-
 include('../config/function.php');
-
+allowedRole([1,2,3]);
 if(!isset($_SESSION['productItems'])){
     $_SESSION['productItems'] = [];
 }

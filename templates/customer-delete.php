@@ -1,7 +1,6 @@
 <?php
-
 require '../config/function.php';
-
+allowedRole([1,2,3]);
 $cusID = $_POST['cusId'];
 
     if (is_numeric($cusID)) {

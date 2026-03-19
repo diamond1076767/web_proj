@@ -1,15 +1,5 @@
 <?php require '../config/function.php';
-if (!isset($_SESSION['loggedInUser']['roleID']) || $_SESSION['loggedInUser']['roleID'] != 1) {
-    redirect('index.php', 'Access Denied. Admin only.');
-    exit();
-}
-
-
-// Allow only Admin
-if (!isset($_SESSION['loggedInUser']['roleID']) || $_SESSION['loggedInUser']['roleID'] != 1) {
-    redirect('admin.php', 'Access Denied. Only Admin can delete users.');
-    exit();
-}
+allowedRole([1]);
 
 if (!isset($_POST['userId'])) {
     redirect('admin.php', 'Invalid request.');

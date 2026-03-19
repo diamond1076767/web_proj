@@ -1,11 +1,7 @@
 <?php
 // Include header file with common elements
 include('includes/header.php');
-
-if (!isset($_SESSION['loggedInUser']['roleID']) || !in_array($_SESSION['loggedInUser']['roleID'], [2,3])) {
-    redirect('index.php', 'Access Denied. Staff or Manager only.');
-    exit();
-}
+allowedRole([2,3]);
 ?>
 
 <div class="container-fluid px-4">

@@ -1,7 +1,6 @@
 <?php
-
 require '../config/function.php';
-
+allowedRole([1,2,3]);
 $paraResult = checkParamId('index');
 if(is_numeric($paraResult)){
     

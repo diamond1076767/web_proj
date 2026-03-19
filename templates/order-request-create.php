@@ -1,10 +1,7 @@
 <?php
 // Include header file with common elements
 include("includes/header.php");
-if (!isset($_SESSION['loggedInUser']['roleID']) || $_SESSION['loggedInUser']['roleID'] != 3) {
-        redirect('index.php', 'Access Denied. Manager only.');
-        exit();
-    }
+allowedRole([3]);
 // Add Customer Modal
 ?>
 <div class="modal fade" id="addCustomerModal" data-bs-backdrop='static' data-bs-keyboard='false' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

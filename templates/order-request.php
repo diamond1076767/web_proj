@@ -1,11 +1,6 @@
 <?php 
 include('includes/header.php');
-
-// --- Access Control: Only Staff (3) or Manager (2) allowed ---
-if (!isset($_SESSION['loggedInUser']['roleID']) || !in_array($_SESSION['loggedInUser']['roleID'], [2,3])) {
-    redirect('index.php', 'Access Denied. Staff or Manager only.');
-    exit();
-}
+allowedRole([2,3]);
 
 // --- Validate and sanitize GET parameters ---
 $createDate = isset($_GET['date']) ? validate($_GET['date']) : '';

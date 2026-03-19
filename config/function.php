@@ -461,6 +461,22 @@ function isValidEmailFormat($email) {
     return (strtolower($domain) === 'sit.singaporetech.edu.sg');
 }
 
+function allowedRole($allowedRoles = []) {
+    // Check if user is logged in
+    if (!isset($_SESSION['loggedInUser']['roleID'])) {
+        redirect('index.php', 'Please login first.');
+        exit();
+    }
+
+    $userRole = $_SESSION['loggedInUser']['roleID'];
+
+    // Check if role is allowed
+    if (!in_array($userRole, $allowedRoles)) {
+        redirect('index.php', 'Access Denied.');
+        exit();
+    }
+}
+
 ?>
 
 

@@ -1,8 +1,5 @@
 <?php include("includes/header.php");
-if (!isset($_SESSION['loggedInUser']['roleID']) || $_SESSION['loggedInUser']['roleID'] != 1) {
-    redirect('index.php', 'Access Denied. Admin only.');
-    exit();
-}
+allowedRole([1]);
 ?>
 
 <div class="container-fluid px-4">

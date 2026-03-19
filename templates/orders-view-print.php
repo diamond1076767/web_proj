@@ -1,7 +1,7 @@
 <?php
 // Include header file with common elements
 include('includes/header.php');
-?>
+allowedRole([1,2,3]);?>
 
 <div class="container-fluid px-4">
     <!-- Card for displaying order details -->

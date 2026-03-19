@@ -1,9 +1,5 @@
 <?php require '../config/function.php';
-    if (!isset($_SESSION['loggedInUser']['roleID']) || !in_array($_SESSION['loggedInUser']['roleID'], [2,3])) {
-        redirect('index.php', 'Access Denied. Staff or Manager only.');
-        exit();
-    }
-    
+    allowedRole([2,3]);
 
     $requestID = $_POST['requestId'];
 

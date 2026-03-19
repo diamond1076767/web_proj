@@ -1,11 +1,6 @@
 <?php 
 include('includes/header.php');
-
-// Check if the user is already logged in and can log in
-if(!isset($_SESSION['loggedIn'])){
-    header("Location: login.php");
-    exit();
-}
+allowedRole([1,2,3]);
 ?>
 
 

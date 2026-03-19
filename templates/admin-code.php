@@ -4,7 +4,8 @@
 
 // saveUserRequest, updateUserRequest
 
-include_once ("../config/function.php");
+include_once ("../config/function.php"); 
+allowedRole([1, 2, 3]);
 
     if (isset($_POST['createUser'])) {
         // Collect and sanitize input
