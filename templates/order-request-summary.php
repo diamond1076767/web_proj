@@ -7,25 +7,21 @@ if (!isset($_SESSION['productItems'])) {
     header('Location: order-request-create.php');
     exit(); // Added exit to prevent further execution
 }
-
 allowedRole([2,3]);
+
+if (isset($_SESSION['error_message'])) {
+    echo "<script>
+        swal({
+            title: 'Error',
+            text: '". $_SESSION['error_message'] ."',
+            icon: 'error',
+            button: 'OK'
+        });
+    </script>";
+    unset($_SESSION['error_message']);
+}
 ?>
 
-<!-- Order Success Modal -->
-<div class="modal fade" id="orderSuccessModal" data-bs-backdrop='static' data-bs-keyboard='false' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="mb-3 p-4">
-                    <!-- Order success message placeholder -->
-                    <h5 id="orderPlaceSuccessMessage"></h5>
-                </div>
-                <!-- Close button -->
-                <a href="order-request.php" type="button" class="btn btn-secondary">Close</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="container-fluid px-4">
     <div class="row">

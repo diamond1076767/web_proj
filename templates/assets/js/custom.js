@@ -189,26 +189,69 @@ function checkExistingPhone(phone) {
     });
 }
 	
-	$(document).on("click", "#saveOrder", function(){
-		$.ajax({
-			type: "POST",
-			url: "order-code.php",
-			data: {
-				'saveOrder': true
-			},
-			success: function(response){
-				var res = JSON.parse(response);
-				
-				if(res.status == 200){
-					swal(res.message,res.message,res.status_type);					
-					$('#orderPlaceSuccessMessage').text(res.message);
-					$('#orderSuccessModal').modal('show');
-				}else{
-					swal(res.message,res.message,res.status_type);
-				}
-			}
-		});
-	});
+	$(document).on("click", "#saveOrder", function () {
+
+    // Prevent double click
+    var $btn = $(this);
+    $btn.prop("disabled", true);
+
+    $.ajax({
+        type: "POST",
+        url: "order-code.php",
+        data: {
+            'saveOrder': true
+        },
+        success: function (response) {
+            try {
+                var res = JSON.parse(response);
+
+                if (res.status == 200) {
+
+                    swal({
+                        title: "Order Request Placed Successfully",
+                        text: res.message,
+                        icon: "success",
+                        button: "OK"
+                    }).then(() => {
+                        window.location.href = "order-request.php";
+                    });
+
+                } else {
+                    swal({
+                        title: "Error",
+                        text: res.message,
+                        icon: "error",
+                        button: "OK"
+                    });
+
+                    $btn.prop("disabled", false); // re-enable on error
+                }
+
+            } catch (e) {
+                console.error("Invalid JSON:", response);
+
+                swal({
+                    title: "Error",
+                    text: "Unexpected server response",
+                    icon: "error",
+                    button: "OK"
+                });
+
+                $btn.prop("disabled", false);
+            }
+        },
+        error: function () {
+            swal({
+                title: "Error",
+                text: "Request failed. Please try again.",
+                icon: "error",
+                button: "OK"
+            });
+
+            $btn.prop("disabled", false);
+        }
+    });
+});
 	
 	
 });
