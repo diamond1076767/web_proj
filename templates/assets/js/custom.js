@@ -56,63 +56,34 @@ $(document).ready(function(){
 	
 	//proceed to place order button click
 	$(document).on('click','.proceedToPlace', function(){
-		
+
 		var cphone = $("#cphone").val();
 		var payment_mode = $("#payment_mode").val();
-		
+
 		if(payment_mode == ''){
 			swal("Select Payment Mode","Select your payment mode","warning");
 			return false;
 		}
-		
+
 		if(cphone == '' || !$.isNumeric(cphone)){
-			
 			swal("Enter Phone Number","Enter Valid Phone Number","warning");
 			return false;
 		}
-		
-		var data = {
-			'proceedToPlaceBtn': true,
-			'cphone': cphone,
-			'payment_mode': payment_mode,
-		};
-		
-		$.ajax({
-			type: "POST",
-			url: "order-code.php",
-			data: data,
-			success: function(response){
-			var res = JSON.parse(response);
 
-			if(res.status == 200){
-
-				// Let backend tell frontend where to go
-				window.location.href = res.redirect;
-
-			} else if(res.status == 404){
-				swal(res.message, res.message, res.status_type, {
-					buttons: {
-						catch: {
-							text: "Add Customer",
-							value: "catch"
-						},
-						cancel: "Cancel"
-					}
-				})
-				.then((value) => {
-					if(value === "catch"){
-						$('#c_phone').val(cphone);
-						$('#addCustomerModal').modal('show');
-					}
-				});
-
-			} else {
-				swal(res.message, res.message, res.status_type);
+		// ✅ Confirmation popup
+		swal({
+			title: "Confirm Order",
+			text: "Proceed to place this order?",
+			icon: "warning",
+			buttons: ["Cancel", "Yes, proceed"],
+			dangerMode: false,
+		}).then((willSubmit) => {
+			if (willSubmit) {
+				// ✅ Submit FORM (not AJAX)
+				$('#placeOrderForm').submit();
 			}
-		}
-				
 		});
-		
+
 	});
 	
 		// Add Customer to customers table

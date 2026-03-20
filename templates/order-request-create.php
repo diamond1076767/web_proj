@@ -76,11 +76,11 @@ allowedRole([3]);
                                 foreach ($products as $prodItem) {
                                     $colourID = $prodItem['colourID'];
                                     $colourName = getColourName($colourID);
-                                    ?>
+                            ?>
                                     <option value="<?= $prodItem['_id']; ?>">
                                         <?= $prodItem['title'] . ' - ' . $colourName; ?>
                                     </option>
-                                <?php
+                            <?php
                                 }
                             } else {
                                 echo '<option value="">No Product Found</option>';
@@ -119,7 +119,7 @@ allowedRole([3]);
                     unset($_SESSION['productItemId']);
                     unset($_SESSION['productItems']);
                 }
-                ?>
+            ?>
                 <!-- Products Table -->
                 <div class="table-responsive mb-3" id='productContent'>
                     <table class="table table-bordered table-striped">
@@ -170,33 +170,39 @@ allowedRole([3]);
                     </table>
                 </div>
 
+
                 <!-- Customer Information Section -->
-                <div class="mt-2" id='customerContent'>
+                <div class="mt-2" id="customerContent">
                     <hr>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <!-- Payment Mode Dropdown -->
-                            <label>Select Payment Mode</label>
-                            <select id="payment_mode" class="form-select">
-                                <option value="">-- Select Payment --</option>
-                                <option value="Cash Payment">Cash Payment</option>
-                                <option value="Online Payment">Online Payment</option>
-                            </select>
+
+                    <form id="placeOrderForm" action="order-code.php" method="POST">
+                        <input type="hidden" name="proceedToPlaceBtn" value="1">
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Select Payment Mode</label>
+                                <select name="payment_mode" id="payment_mode" class="form-select" required>
+                                    <option value="">-- Select Payment --</option>
+                                    <option value="Cash Payment">Cash Payment</option>
+                                    <option value="Online Payment">Online Payment</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label>Enter Customer Phone Number</label>
+                                <input type="number" name="cphone" id="cphone" class="form-control" required />
+                            </div>
+
+                            <div class="col-md-4">
+                                <br />
+                                <button type="button" class="btn btn-warning w-100 proceedToPlace">
+                                    Proceed to place order
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <!-- Customer Phone Input -->
-                            <label>Enter Customer Phone Number</label>
-                            <input type="number" id="cphone" class="form-control value" />
-                        </div>
-                        <div class="col-md-4">
-                            <!-- Proceed to Place Order Button -->
-                            <br />
-                            <input type="hidden" id="roleID" value="<?= $_SESSION['loggedInUser']['roleID']; ?>">
-                            <button type="button" class="btn btn-warning w-100 proceedToPlace">Proceed to place order</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
-                <?php
+            <?php
             } else {
                 echo '<h5>No Items Added</h5>';
             }

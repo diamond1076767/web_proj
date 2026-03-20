@@ -46,8 +46,8 @@ if (isset($_SESSION['loggedInUser']['roleID'])) {
 	
 	<link href="assets/css/custom.css" rel="stylesheet" />
 
-    <link rel="alternate icon" type="image/png" href="assets/images/inventory2.png" />
-    <link rel="icon" type="image/png" href="assets/images/inventory2.png">
+    <link rel="alternate icon" type="image/png" href="assets/images/inventory2i.png" />
+    <link rel="icon" type="image/png" href="assets/images/inventory2i.png">
 
 	
 </head>

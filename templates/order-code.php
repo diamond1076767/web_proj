@@ -96,42 +96,25 @@ if(isset($_POST['productIncDec'])){
 if(isset($_POST['proceedToPlaceBtn'])){
     $phone = validate(encryption($_POST['cphone']));
     $payment_mode = validate($_POST['payment_mode']);
-    
-    // Checking for Customer
+
     $checkCustomer = mysqli_query($con, "SELECT * FROM customer WHERE telephone='$phone' LIMIT 1");
-    
-    if($checkCustomer){
-        if(mysqli_num_rows($checkCustomer)>0){
 
-            $_SESSION['invoice_no'] = "INV-".rand(111111,999999);
-            $_SESSION['cphone'] = $phone;
-            $_SESSION['payment_mode'] = $payment_mode;
+    if($checkCustomer && mysqli_num_rows($checkCustomer)>0){
 
-            // ✅ GET ROLE FROM SESSION (SAFE)
-            $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
+        $_SESSION['invoice_no'] = "INV-".rand(111111,999999);
+        $_SESSION['cphone'] = $phone;
+        $_SESSION['payment_mode'] = $payment_mode;
 
-            // ✅ DECIDE REDIRECT HERE (BACKEND)
-            $redirect = ($roleID == 3) 
-                ? 'order-request-summary.php' 
-                : 'order-summary.php';
+        $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
 
-            // ✅ RETURN REDIRECT TO JS
-            echo json_encode([
-                'status' => 200,
-                'status_type' => 'success',
-                'message' => 'Customer Found',
-                'redirect' => $redirect
-            ]);
-            exit;
-
+        if($roleID == 3){
+            redirect('order-request-summary.php', 'Customer Found');
         } else {
-
-            $_SESSION['cphone'] = $phone;
-
-            jsonResponse(404, 'warning', 'Customer Not Found');
+            redirect('order-summary.php', 'Customer Found');
         }
+
     } else {
-        jsonResponse(500, 'error', 'Something Went Wrong');
+        redirect('order-request-create.php', 'Customer Not Found');
     }
 }
 
