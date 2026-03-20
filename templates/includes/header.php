@@ -45,6 +45,10 @@ if (isset($_SESSION['loggedInUser']['roleID'])) {
 	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 	
 	<link href="assets/css/custom.css" rel="stylesheet" />
+
+    <link rel="alternate icon" type="image/png" href="assets/images/inventory2.png" />
+    <link rel="icon" type="image/png" href="assets/images/inventory2.png">
+
 	
 </head>
 <body class="sb-nav-fixed">

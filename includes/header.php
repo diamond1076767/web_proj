@@ -11,6 +11,9 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="icon" href="assets/images/inventory2.png" type="image/png" />
+    <link rel="shortcut icon" href="assets/images/inventory2.png" type="image/png" />
+    
   </head>
 <body>
 
