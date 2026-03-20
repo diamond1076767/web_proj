@@ -9,13 +9,14 @@ require 'dbcon.php';
 function validate($inputData)
 {
     global $con;
+    $inputData = $inputData ?? '';
     $validatedData = mysqli_real_escape_string($con, $inputData);
     return trim($validatedData);
 }
 
 function validateInput($input) {
-    $validatedInput = filter_var($input, FILTER_SANITIZE_STRING);
-    return htmlspecialchars(trim($validatedInput), ENT_QUOTES, 'UTF-8');
+    $input = trim((string)$input);
+    return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
 }
 
 // Redirect from 1 page to another page with the message (status)
@@ -23,7 +24,7 @@ function redirect($url, $status)
 {
     $_SESSION['status'] = $status;
     header('Location: ' . $url);
-    exit(0);
+    exit();
 }
 
 function alertMessage()
@@ -81,23 +82,27 @@ function update($tableName, $_id, $data){
 
 // Update user data using this function
 function updateData($tableName, $_id, $data){
-    
     global $con;
     
     $table = validate($tableName);
     $_id = validate($_id);
     
-    $updateDataString = "";
+    $updateDataParts = [];
     
     foreach($data as $column => $value){
-        
-        $updateDataString .= $column.'='."'$value',";
+        if ($value === NULL) {
+            $updateDataParts[] = "$column = NULL"; // Proper NULL without quotes
+        } else {
+            $escapedValue = mysqli_real_escape_string($con, $value);
+            $updateDataParts[] = "$column = '$escapedValue'";
+        }
     }
     
-    $finalUpdateData = substr(trim($updateDataString),0,-1);
+    $updateDataString = implode(", ", $updateDataParts);
     
-    $query = "UPDATE $table SET $finalUpdateData, updated_at = CURRENT_TIMESTAMP WHERE _id='$_id'";
+    $query = "UPDATE $table SET $updateDataString, updated_at = CURRENT_TIMESTAMP WHERE _id='$_id'";
     $result = mysqli_query($con, $query);
+    
     return $result;
 }
 
@@ -435,19 +440,6 @@ function logoutSession() {
     
 }
 
-function saveSecretToDatabase($userId, $secret) {
-    global $con;
-
-    $secret = encryption($secret);
-    // Prepare and execute a query to save the secret to the database
-    $query = "UPDATE user SET auth_secret=? WHERE _id=?";
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("si", $secret, $userId);
-    $stmt->execute();
-
-    // Close the statement
-    $stmt->close();
-}
 
 function isAlphabeticFullName($fullName) {
     // Remove spaces and check if all characters are alphabetic
@@ -465,8 +457,24 @@ function isValidEmailFormat($email) {
     $emailParts = explode('@', $email);
     $domain = end($emailParts);
 
-    // Check if the domain is "@amc.tp.edu.sg"
-    return (strtolower($domain) === 'amc.tp.edu.sg');
+    // Check if the domain is "@sit.singaporetech.edu.sg"
+    return (strtolower($domain) === 'sit.singaporetech.edu.sg');
+}
+
+function allowedRole($allowedRoles = []) {
+    // Check if user is logged in
+    if (!isset($_SESSION['loggedInUser']['roleID'])) {
+        redirect('index.php', 'Please login first.');
+        exit();
+    }
+
+    $userRole = $_SESSION['loggedInUser']['roleID'];
+
+    // Check if role is allowed
+    if (!in_array($userRole, $allowedRoles)) {
+        redirect('index.php', 'Access Denied.');
+        exit();
+    }
 }
 
 ?>
