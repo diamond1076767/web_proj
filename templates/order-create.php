@@ -160,9 +160,9 @@ allowedRole([1,2]);
 				    			</select>
 				    		</div>
 				    		<div class="col-md-4">
-				    			<label>Enter Customer Phone Number</label>
-				    			<input type="number" id="cphone" class="form-control value=""/>
-				    		</div>
+                                <label>Enter Customer Phone Number</label>
+                                <input type="number" name="cphone" id="cphone" class="form-control" required />
+                            </div>
 				    		<div class="col-md-4">
 				    			<br/>
 				    			<button type="button" class="btn btn-warning w-100 proceedToPlace">Proceed to place order</button>
