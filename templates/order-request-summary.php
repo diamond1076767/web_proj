@@ -57,9 +57,9 @@ if (isset($_SESSION['error_message'])) {
                                     <tbody>
                                         <tr>
                                             <td style="text-align: center;" colspan="2">
-                                                <h4 style="font-size: 23px; line-height: 30px; margin: 2px; padding: 0;">TP Advanced Manufacturing Centre</h4>
-                                                <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">21 Tampines Ave 1, Singapore 529757</p>
-                                                <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">Temasek Polytechnic</p>
+                                                <h4 style="font-size: 23px; line-height: 30px; margin: 2px; padding: 0;">SIT Advanced Manufacturing Centre</h4>
+                                                <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">1 Punggol Coast Road,Singapore 828608</p>
+                                                <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">Singapore Institute of Technology</p>
                                             </td>
                                         </tr>
                                         <tr>
@@ -74,7 +74,7 @@ if (isset($_SESSION['error_message'])) {
                                                 <h5 style="font-size: 20px; line-height: 30px; margin: 0px; padding: 0;">Invoice Details</h5>
                                                 <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice No.: -</p>
                                                 <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice Date: -</p>
-                                                <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Address: 21 Tampines Ave 1, Singapore 529757</p>
+                                                <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Address: 1 Punggol Coast Road,Singapore 828608</p>
                                             </td>
                                         </tr>
                                     </tbody>

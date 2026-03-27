@@ -70,7 +70,6 @@ $(document).ready(function(){
 			return false;
 		}
 
-		// ✅ Confirmation popup
 		swal({
 			title: "Confirm Order",
 			text: "Proceed to place this order?",
@@ -79,7 +78,6 @@ $(document).ready(function(){
 			dangerMode: false,
 		}).then((willSubmit) => {
 			if (willSubmit) {
-				// ✅ Submit FORM (not AJAX)
 				$('#placeOrderForm').submit();
 			}
 		});

@@ -16,77 +16,65 @@ allowedRole([1,2]);
 			
 				<div class="row">
 					<div class="col-md-12 mb-3">
-    					<label for="">Product Name *</label>
-    					<input type="text" name="name" required class="form-control" />
+    					<label class="form-label">Product Name *</label>
+    					<input type="text" name="name" required class="form-control" placeholder="Enter product name"/>
     				</div>
 				
 					<div class="col-md-12 mb-3">
-						<label>Select Category</label>
+						<label class="form-label">Select Category</label>
 						<select required name="category_id" class="form-select">
-							<option value="">Select Category</option>
+							<option value="" selected disabled>Choose a category...</option>
 							<?php 
-							
                             $categories = getAll('categories');
-							if ($categories){
-							    if(mysqli_num_fields($categories)>0){
-							        foreach($categories as $cateItem){
-							            echo '<option value="'.$cateItem['_id'].'">'.$cateItem['categoryName'].'</option>';
-							        }
-							    }else{
-							        echo '<option value="">No Categories found</option>';
-							    }
-							}else{
-							    echo '<option value="">Something Went Wrong!</option>';
-							}
-							?>
+                            if ($categories && mysqli_num_rows($categories) > 0){
+                                foreach($categories as $cateItem){
+                                    echo '<option value="'.$cateItem['_id'].'">'.$cateItem['categoryName'].'</option>';
+                                }
+                            } else {
+                                echo '<option value="">No Categories found</option>';
+                            }
+                            ?>
 						</select>
 					</div>
 
     				<div class="col-md-12 mb-3">
-						<label>Select Colour</label>
+						<label class="form-label">Select Colour</label>
 						<select required name="colour_id" class="form-select">
-							<option value="">Select Colour</option>
+							<option value="" selected disabled>Choose a colour...</option>
 							<?php 
-							$colour = getAll('colour');
-							if ($colour){
-							    if(mysqli_num_fields($colour)>0){
-							        foreach($colour as $cateItem){
-							            echo '<option value="'.$cateItem['_id'].'">'.$cateItem['colourName'].'</option>';
-							        }
-							    }else{
-							        echo '<option value="">No Colours found</option>';
-							    }
-							}else{
-							    echo '<option value="">Something Went Wrong!</option>';
-							}
-							?>
+                            $colour = getAll('colour');
+                            if ($colour && mysqli_num_rows($colour) > 0){
+                                foreach($colour as $cateItem){
+                                    echo '<option value="'.$cateItem['_id'].'">'.$cateItem['colourName'].'</option>';
+                                }
+                            } else {
+                                echo '<option value="">No Colours found</option>';
+                            }
+                            ?>
 						</select>
 					</div>
     				<div class="col-md-12 mb-3">
-						<label>Description</label>
-						<br/>
-						<input type="text" name="description" class="form-control">
-					</div>
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Enter product details"></textarea>
+                    </div>
     				<div class="col-md-4 mb-3">
-						<label>Price *</label>
-						<br/>
-						<input type="text" name="price" required class="form-control">
+						<label class="form-label">Price *</label>
+						<input type="number" name="price" step="0.01" required class="form-control"placeholder="0.00">
 					</div>
 					<div class="col-md-4 mb-3">
-						<label>Quantity *</label>
-						<br/>
-						<input type="text" name="quantity" required class="form-control">
+						<label class="form-label">Quantity *</label>
+						<input type="number" name="quantity" step="1" required class="form-control" placeholder="0">
 					</div>
 					<div class="col-md-4 mb-3">
-						<label>Image</label>
-						<br/>
-						<input type="file" name="image" class="form-control">
-					</div>	
+                        <label class="form-label">Product Image</label>
+                        <input type="file" name="image" accept="image/*" class="form-control" >
+                    </div>
 					<div class="col-md-4 mb-3">
-						<label>Hidden</label>
-						<br/>
-						<input type="checkbox" name="status" style="width:30px;height:30px";>
-					</div>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" name="status" id="statusSwitch" style="width:40px; height:20px;">
+                            <label class="form-check-label ms-2" for="statusSwitch">Hidden</label>
+                        </div>
+                    </div>
 					
     				<div class="col-md-8 mb-3 text-end">
     					<button type="submit" name="saveProduct" class="btn btn-primary" style="margin-top:15px">Submit</button>	
