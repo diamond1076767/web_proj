@@ -94,19 +94,20 @@ if(isset($_POST['productIncDec'])){
 }
 
 if(isset($_POST['proceedToPlaceBtn'])){
-    $phone = validate(encryption($_POST['cphone']));
+    $phone = validate(encryption($_POST['cphone'])); // Ensure encryption matches DB storage
     $payment_mode = validate($_POST['payment_mode']);
 
     $checkCustomer = mysqli_query($con, "SELECT * FROM customer WHERE telephone='$phone' LIMIT 1");
 
-    if($checkCustomer && mysqli_num_rows($checkCustomer)>0){
+    // Get current user role
+    $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
 
+    if($checkCustomer && mysqli_num_rows($checkCustomer) > 0){
         $_SESSION['invoice_no'] = "INV-".rand(111111,999999);
         $_SESSION['cphone'] = $phone;
         $_SESSION['payment_mode'] = $payment_mode;
 
-        $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
-
+        // Redirect based on role
         if($roleID == 3){
             redirect('order-request-summary.php', 'Customer Found');
         } else {
@@ -114,7 +115,13 @@ if(isset($_POST['proceedToPlaceBtn'])){
         }
 
     } else {
-        redirect('order-request-create.php', 'Customer Not Found');
+        // FIX: Redirect back to the correct page if customer isn't found
+        if($roleID == 3){
+            redirect('order-request-create.php', 'Customer Not Found. Please add customer first.');
+        } else {
+            // This keeps Admins/Managers on the correct page!
+            redirect('order-create.php', 'Customer Not Found. Please click "Add Customer" above.');
+        }
     }
 }
 
