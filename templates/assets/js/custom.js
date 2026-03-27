@@ -54,35 +54,34 @@ $(document).ready(function(){
 		});
 	}
 	
-	//proceed to place order button click
-	$(document).on('click','.proceedToPlace', function(){
+	$(document).on('click', '.proceedToPlace', function () {
+    var cphone = $("#cphone").val();
+    var payment_mode = $("#payment_mode").val();
 
-		var cphone = $("#cphone").val();
-		var payment_mode = $("#payment_mode").val();
+    // Basic frontend validation to save server trips
+    if (payment_mode == null || payment_mode == '') {
+        swal("Select Payment Mode", "Select your payment mode", "warning");
+        return false;
+    }
 
-		if(payment_mode == ''){
-			swal("Select Payment Mode","Select your payment mode","warning");
-			return false;
-		}
+    if (cphone == '' || !$.isNumeric(cphone)) {
+        swal("Enter Phone Number", "Enter Valid Phone Number", "warning");
+        return false;
+    }
 
-		if(cphone == '' || !$.isNumeric(cphone)){
-			swal("Enter Phone Number","Enter Valid Phone Number","warning");
-			return false;
-		}
-
-		swal({
-			title: "Confirm Order",
-			text: "Proceed to place this order?",
-			icon: "warning",
-			buttons: ["Cancel", "Yes, proceed"],
-			dangerMode: false,
-		}).then((willSubmit) => {
-			if (willSubmit) {
-				$('#placeOrderForm').submit();
-			}
-		});
-
-	});
+    swal({
+        title: "Confirm Order",
+        text: "Proceed to place this order?",
+        icon: "warning",
+        buttons: ["Cancel", "Yes, proceed"],
+        dangerMode: false,
+    }).then((willSubmit) => {
+        if (willSubmit) {
+            // This now looks for the ID we added to the <form> tag
+            $('#placeOrderForm').submit();
+        }
+    });
+});
 	
 		// Add Customer to customers table
 	$(document).on('click', '.saveCustomer', function() {

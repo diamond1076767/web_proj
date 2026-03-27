@@ -29,8 +29,8 @@ allowedRole([1,2,3]);
 								<th>ID</th>
 								<th>Image</th>
 								<th>Name</th>
-								<th>Category</th>
 								<th>Colour</th>
+								<th>Category</th>
 								<th>Quantity</th>
 								<th>Price</th>
 								<th>Description</th>
