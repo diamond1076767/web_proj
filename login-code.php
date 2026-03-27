@@ -12,6 +12,10 @@ if (isset($_POST['loginBtn'])){
     }
 
     $stmt = mysqli_prepare($con, "SELECT * FROM user WHERE BINARY userName=? LIMIT 1");
+    if (!$stmt){
+        redirect('login.php', 'Database error');
+    }
+
     mysqli_stmt_bind_param($stmt, "s", $username);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
@@ -49,13 +53,11 @@ if (isset($_POST['loginBtn'])){
         redirect('login.php', 'Invalid Password');
     }
 
-    $stmtReset = mysqli_prepare($con, "UPDATE user SET failed_attempts = 0 WHERE _id = ?");
-    mysqli_stmt_bind_param($stmtReset, "i", $row['_id']);
-    mysqli_stmt_execute($stmtReset);
+    session_regenerate_id(true);
 
-    $stmtLoginTime = mysqli_prepare($con, "UPDATE user SET logTime = CURRENT_TIMESTAMP WHERE _id = ?");
-    mysqli_stmt_bind_param($stmtLoginTime, "i", $row['_id']);
-    mysqli_stmt_execute($stmtLoginTime);
+    $stmtResetLoginTimestamp = mysqli_prepare($con, "UPDATE user SET failed_attempts = 0, logTime = CURRENT_TIMESTAMP WHERE _id = ?");
+    mysqli_stmt_bind_param($stmtResetLoginTimestamp, "i", $row['_id']);
+    mysqli_stmt_execute($stmtResetLoginTimestamp);
 
     $_SESSION['user_id'] = $row['_id'];
     $_SESSION['first_log'] = $row['first_log'];
