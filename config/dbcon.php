@@ -1,12 +1,12 @@
 <?php
-$db_hostname="127.0.0.1";
-$db_username="localhost";
-$db_password="#Dragonsword1";
-$db_database="tpamc";
+$config = parse_ini_file('dbcon.ini');
 
-$con = mysqli_connect($db_hostname,$db_username,$db_password,$db_database);
-if(!$con){
-    die("Connection Failed: ".mysqli_connect_error());
+if (!$config) {
+    die("Error loading database configuration file.");
+} else {
+    $con = mysqli_connect($config['servername'],$config['username'],$config['password'],$config['dbname']);
+    if(!$con){
+        die("Connection Failed: ".mysqli_connect_error());
+    }   
 }
-
 ?>

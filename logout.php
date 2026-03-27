@@ -16,11 +16,13 @@ if (isset($_SESSION['loggedIn'])) {
         logoutSession();
 
         redirect('login.php', INACTIVITY_LOGOUT_MESSAGE);
+        session_unset(); // Unset all session variables
         session_destroy(); // Destroy all sessions
     } else {
                 // Call the logoutSession function to destroy login sessions
         logoutSession();
         redirect('login.php', LOGGED_OUT_SUCCESSFULLY);
+        session_unset(); // Unset all session variables
         session_destroy(); // Destroy all sessions
     }
 } else {
@@ -28,6 +30,7 @@ if (isset($_SESSION['loggedIn'])) {
     // Redirect the user to the login page with a logout message
     redirect('login.php', LOGGED_OUT_SUCCESSFULLY);
     // If the user is not logged in, destroy all sessions
+    session_unset();
     session_destroy();
 }
 ?>
