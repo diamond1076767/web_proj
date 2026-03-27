@@ -91,7 +91,7 @@ $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
 				<?= ($page == 'admin.php') || ($page == 'admin-create.php') || ($page == 'user-request.php') ? 'show' : ''; ?>
 					"
 						id="collapseadmin"
-						aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+						data-bs-parent="#sidenavAccordion">
 						<nav class="sb-sidenav-menu-nested nav">
 							<a class="nav-link <?= $page == 'admin.php' ? 'active' : ''; ?>" href="admin.php">View Users</a>
 							<a class="nav-link <?= $page == 'user-request.php' ? 'active' : ''; ?>" href="user-request.php">View Requests</a>
