@@ -98,6 +98,9 @@ $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
 							<?php if ($roleID == 1): // Only Admin can add new users ?>
                 				<a class="nav-link <?= $page == 'admin-create.php' ? 'active' : ''; ?>" href="admin-create.php">Add New User</a>
             				<?php endif; ?>
+							<?php if ($roleID == 2): // Only Admin can add new users ?>
+                				<a class="nav-link <?= $page == 'user-request-create.php' ? 'active' : ''; ?>" href="user-request-create.php">Add New User</a>
+            				<?php endif; ?>
 						</nav>
 					</div>
 				<?php endif; ?>

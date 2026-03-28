@@ -2,7 +2,7 @@
 // createUser, updateUser, resetBtn, saveCategory, updateCategory ,saveProduct, updateProduct, saveCustomer, updateCustomer, saveUserBtn,
 // declineUser , updateProfile, checkExistingTelephone, checkExistingmMail, checkExistingUsername
 
-// saveUserRequest, updateUserRequest
+// saveUserRequest
 
 include_once ("../config/function.php"); 
 allowedRole([1, 2, 3]);
@@ -387,165 +387,67 @@ if (isset($_POST['resetBtn'])) {
 }
     
     if (isset($_POST['saveUserRequest'])) {
-        $userID = validate($_SESSION['loggedInUser']['user_id']);
-        
-        $username = validate($_POST['username']);
-        $fullname = validate($_POST['fullname']);
-        $email = validate($_POST['email']);
-        $phone = validate($_POST['telephone']);
-        
-        
-        if ($username != '' && $fullname != '' && $email != '' && $phone != '' && $userID != '') {
-            
-            
-            // Check if username is used by another user
-            $userCheck = mysqli_query($con, "SELECT * FROM user WHERE userName='$username'");
-            if ($userCheck) {
-                if ($userCheck) {
-                    if (mysqli_num_rows($userCheck) > 0) {
-                        redirect('user-request-create.php', 'Username Already Used By Another User.');
-                    }
-                }
-            }
-            
-            // Check if phone number is numeric
-            if (!is_numeric($phone)) {
-                redirect('user-request-create.php', 'Invalid Phone Number. Please enter a numeric value.');
-            }
-            
-            // Check if phone number is used by another user
-            $phoneCheck = mysqli_query($con, "SELECT * FROM user WHERE telephone='$phone'");
-            if ($phoneCheck) {
-                if ($phoneCheck) {
-                    if (mysqli_num_rows($phoneCheck) > 0) {
-                        redirect('user-request-create.php', 'Phone Number Already Used By Another User.');
-                    }else{
-                        $encryptphone = encryption($phone);
-                    }
-                }
-            }
+    $username = validate($_POST['username']);
+    $fullname = validate($_POST['fullname']);
+    $email    = validate($_POST['email']);
+    $phone    = validate($_POST['telephone']);
 
-            if (!isValidEmailFormat($email)) {
-                redirect('user-request-create.php', 'Invalid Email Address. Format: <email>@amc.tp.edu.sg');
-            }
-            
-            // Check if email is used by another user
-            $emailCheck = mysqli_query($con, "SELECT * FROM user WHERE email='$email'");
-            if ($emailCheck) {
-                if ($emailCheck) {
-                    if (mysqli_num_rows($emailCheck) > 0) {
-                        redirect('user-request-create.php', 'Email Already Used By Another User.');
-                    }else{
-                        $encryptemail = encryption($email);
-                    }
-                }
-            }
-
-            if (!isAlphabeticFullName($fullname)) {
-                redirect('user-request-create.php', 'Please enter alphabetic characters.');
-            }
-            
-            $data = [
-                'userID' => $userID,
-                'roleID' => '3',
-                'userName' => $username,
-                'fullName' => $fullname,
-                'email' => $encryptemail,
-                'telephone' => $encryptphone,
-            ];
-            $result = insert('request_user', $data);
-            
-            if ($result) {
-                redirect('user-request.php', 'User Request Created Successfully!');
-            } else {
-                redirect('user-request-create.php', 'Something Went Wrong!');
-            }
-        } else {
-            redirect('user-request-create.php', 'Please fill required fields');
-        }
+    if ($username == '' || $fullname == '' || $email == '' || $phone == '') {
+        redirect('user-request-create.php', 'Please fill required fields');
     }
 
-    if (isset($_POST['updateUserRequest'])) {
-        $requestId = validate($_POST['requestId']);
-        $requestData = getById('request_user', $requestId);
-        if(!$requestData){
-            redirect('user-request.php', 'No Such Request Found');
-        }
-        
-        $username = validate($_POST['username']);
-        $fullname = validate($_POST['fullname']);
-        $email = validate($_POST['email']);
-        $phone = validate($_POST['telephone']);
-        
-        
-        if ($username != '' && $fullname != '' && $email != '' && $phone != '') {
-            
-            
-            // Check if username is used by another user
-            $userCheck = mysqli_query($con, "SELECT * FROM user WHERE userName='$username'");
-            if ($userCheck) {
-                if ($userCheck) {
-                    if (mysqli_num_rows($userCheck) > 0) {
-                        redirect('user-request-edit.php', 'Username Already Used By Another User.');
-                    }
-                }
-            }
-            
-            // Check if phone number is numeric
-            if (!is_numeric($phone)) {
-                redirect('user-request-edit.php', 'Invalid Phone Number. Please enter a numeric value.');
-            }
-            
-            // Check if phone number is used by another user
-            $phoneCheck = mysqli_query($con, "SELECT * FROM user WHERE telephone='$phone'");
-            if ($phoneCheck) {
-                if ($phoneCheck) {
-                    if (mysqli_num_rows($phoneCheck) > 0) {
-                        redirect('user-request-edit.php', 'Phone Number Already Used By Another User.');
-                    }else{
-                        $encryptphone = encryption($phone);
-                    }
-                }
-            }
-
-            if (!isValidEmailFormat($email)) {
-                redirect('user-request-edit.php', 'Invalid Email Address. Format: <email>@amc.tp.edu.sg');
-            }
-            
-            // Check if email is used by another user
-            $emailCheck = mysqli_query($con, "SELECT * FROM user WHERE email='$email'");
-            if ($emailCheck) {
-                if ($emailCheck) {
-                    if (mysqli_num_rows($emailCheck) > 0) {
-                        redirect('user-request-edit.php', 'Email Already Used By Another User.');
-                    }else{
-                        $encryptemail = encryption($email);
-                    }
-                }
-            }
-
-            if (!isAlphabeticFullName($fullname)) {
-                redirect('user-request-edit.php', 'Please enter alphabetic characters.');
-            }
-            
-            $data = [
-                'userName' => $username,
-                'fullName' => $fullname,
-                'email' => $encryptemail,
-                'telephone' => $encryptphone,
-            ];
-            $result = updateData('request_user', $requestId, $data);
-            
-            if ($result) {
-                redirect('user-request-edit.php', 'Request Updated Successfully, Please Inform Your Respective Administrator To Approve This Request.');
-            } else {
-                redirect('user-request-edit.php', 'Something Went Wrong!');
-            }
-        } else {
-            redirect('user-request-edit.php', 'Please fill required fields');
-        }
+    // Check username uniqueness
+    $userCheck = mysqli_query($con, "SELECT * FROM user WHERE userName='$username'");
+    if ($userCheck && mysqli_num_rows($userCheck) > 0) {
+        redirect('user-request-create.php', 'Username Already Used By Another User.');
     }
 
+    // Check phone
+    if (!is_numeric($phone)) {
+        redirect('user-request-create.php', 'Invalid Phone Number.');
+    }
+    $encryptphone = encryption($phone);
+    $phoneCheck = mysqli_query($con, "SELECT * FROM user WHERE telephone='$encryptphone'");
+    if ($phoneCheck && mysqli_num_rows($phoneCheck) > 0) {
+        redirect('user-request-create.php', 'Phone Number Already Used By Another User.');
+    }
+
+    // Check email
+    if (!isValidEmailFormat($email)) {
+        redirect('user-request-create.php', 'Invalid Email Address.');
+    }
+    $encryptemail = encryption($email);
+    $emailCheck = mysqli_query($con, "SELECT * FROM user WHERE email='$encryptemail'");
+    if ($emailCheck && mysqli_num_rows($emailCheck) > 0) {
+        redirect('user-request-create.php', 'Email Already Used By Another User.');
+    }
+
+    if (!isAlphabeticFullName($fullname)) {
+        redirect('user-request-create.php', 'Full Name must be alphabetic.');
+    }
+
+    $requesterName = $_SESSION['loggedInUser']['username'] ?? 'Unknown';
+
+    $data = [
+        'roleID'        => 3,
+        'requesterName' => $requesterName, // make sure this is always set
+        'userName'      => $username,
+        'fullName'      => $fullname,
+        'email'         => $encryptemail,
+        'telephone'     => $encryptphone,
+        'status'        => 'Pending',
+        'created_at'    => date('Y-m-d H:i:s'),
+        'updated_at'    => date('Y-m-d H:i:s'),
+    ];
+
+    $result = insert('request_user', $data);
+
+    if ($result) {
+        redirect('user-request.php', 'User Request Created Successfully!');
+    } else {
+        redirect('user-request-create.php', 'Something Went Wrong!');
+    }
+}
     
 
     if(isset($_POST['saveCustomer'])){
@@ -840,7 +742,7 @@ if (isset($_POST['resetBtn'])) {
 
     // Email validation & encryption
     if (!isValidEmailFormat($email)) {
-        redirect('profile-edit.php', 'Invalid Email Address. Format: <email>@amc.tp.edu.sg');
+        redirect('profile-edit.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
     }
     $emailCheck = mysqli_query($con, "SELECT * FROM user WHERE email='$email' AND _id != '$userID'");
     if ($emailCheck && mysqli_num_rows($emailCheck) > 0) {

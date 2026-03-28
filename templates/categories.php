@@ -46,14 +46,20 @@ allowedRole([1,2,3]);?>
     						?>
 						</td>
 						<td>
-							<form action="categories-edit.php" method="post" style="display: inline-block; margin-right: 1px;">
-                               <input type="hidden" name="cateId" value="<?= validate($item['_id']) ?>">
-                                <button type="submit" class="btn btn-success btn-sm">Edit</button>
-                            </form>
-							<form action="categories-delete.php" method="post" style="display: inline-block; margin-right: 1px;">
-                               <input type="hidden" name="cateId" value="<?= validate($item['_id']) ?>">
-                                <button type="submit" class="btn btn-danger btn-sm" onclick= "return confirm('Are you sure you want to delete this item?')">Delete</button>
-                            </form>
+							<?php 
+							$currentUserRole = $_SESSION['loggedInUser']['roleID'] ?? null;
+							if ($currentUserRole == 1 || $currentUserRole == 2): ?>
+								<form action="categories-edit.php" method="post" style="display: inline-block; margin-right: 1px;">
+									<input type="hidden" name="cateId" value="<?= validate($item['_id']) ?>">
+									<button type="submit" class="btn btn-success btn-sm">Edit</button>
+								</form>
+								<form action="categories-delete.php" method="post" style="display: inline-block; margin-right: 1px;">
+									<input type="hidden" name="cateId" value="<?= validate($item['_id']) ?>">
+									<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+								</form>
+							<?php else: ?>
+								<span class="text-muted">No Actions</span>
+							<?php endif; ?>
 						</td>
 					</tr>
 					<?php endforeach;?>

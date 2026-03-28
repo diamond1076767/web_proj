@@ -12,7 +12,7 @@ allowedRole([2]);
         <div class="card-body">
             <?php alertMessage();?>
             
-            <form action="manager-code.php" method="POST">
+            <form action="admin-code.php" method="POST">
             
                 <div class="row">
                 
@@ -38,8 +38,8 @@ allowedRole([2]);
                 
                     <div class="col-md-4 mb-3">
                         <label>Requested By</label>
-                        <!-- Displaying the username of the logged-in user -->
-                        <input type="text" name="requester" disabled class="form-control" value="<?php
+                        <!-- Displaying the username of the logged-in user (locked) -->
+                        <input type="text" name="requesterName" disabled class="form-control" value="<?php
                             if (isset($_SESSION['loggedIn'])) {
                                 echo $_SESSION['loggedInUser']['username'];
                             }

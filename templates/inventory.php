@@ -51,33 +51,35 @@ allowedRole([1,2,3]);
 									<td>
 										<?php
 										$colourID = $item['colourID'];
-
-										$query = "SELECT colourName FROM colour WHERE _id = $colourID";
-										$result = mysqli_query($con, $query);
-
-										if ($result) {
-											$colorRow = mysqli_fetch_assoc($result);
-											$colorName = $colorRow['colourName'];
-
-											echo $colorName;
+										if ($colourID !== null) {
+											$query = "SELECT colourName FROM colour WHERE _id = $colourID";
+											$result = mysqli_query($con, $query);
+											if ($result && mysqli_num_rows($result) > 0) {
+												$colorRow = mysqli_fetch_assoc($result);
+												echo $colorRow['colourName'];
+											} else {
+												echo '-';
+											}
 										} else {
-											echo "Error retrieving color information";
+											echo '-';
 										}
 										?>
 									</td>
-									<td><?php
+
+									<td>
+										<?php
 										$categoryID = $item['categoryID'];
-
-										$query = "SELECT categoryName FROM categories WHERE _id = $categoryID";
-										$result = mysqli_query($con, $query);
-
-										if ($result) {
-											$catRow = mysqli_fetch_assoc($result);
-											$catName = $catRow['categoryName'];
-
-											echo $catName;
+										if ($categoryID !== null) {
+											$query = "SELECT categoryName FROM categories WHERE _id = $categoryID";
+											$result = mysqli_query($con, $query);
+											if ($result && mysqli_num_rows($result) > 0) {
+												$catRow = mysqli_fetch_assoc($result);
+												echo $catRow['categoryName'];
+											} else {
+												echo '-';
+											}
 										} else {
-											echo "Error retrieving category information";
+											echo '-';
 										}
 										?>
 									</td>

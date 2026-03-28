@@ -7,9 +7,14 @@ $createDate = isset($_GET['date']) ? validate($_GET['date']) : '';
 $requestStatus = isset($_GET['request_status']) ? validate($_GET['request_status']) : '';
 
 // --- Base Query ---
-$query = "SELECT o._id AS request_id, o.created_at AS request_date, o.*, c.* 
+$query = "SELECT 
+            o._id AS request_id, 
+            o.created_at AS request_date, 
+            o.*, 
+            c.customerName, 
+            c.telephone 
           FROM request_order o
-          JOIN customer c ON c._id = o.customerID";
+          LEFT JOIN customer c ON c._id = o.customerID";
 
 // --- Add filters dynamically ---
 $conditions = [];
@@ -88,8 +93,8 @@ $orders = mysqli_query($con, $query);
                         <tbody>
                             <?php while ($orderItem = mysqli_fetch_assoc($orders)): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($orderItem['customerName']); ?></td>
-                                    <td><?= htmlspecialchars(decryption($orderItem['telephone'])); ?></td>
+                                    <td><?= htmlspecialchars($orderItem['customerName'] ?? '-'); ?></td>
+                                    <td><?= htmlspecialchars(!empty($orderItem['telephone']) ? decryption($orderItem['telephone']) : '-'); ?></td>
                                     <td><?= htmlspecialchars($orderItem['payment_mode']); ?></td>
                                     <td>
                                         <?php

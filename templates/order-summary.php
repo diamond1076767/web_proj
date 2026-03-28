@@ -148,10 +148,14 @@ allowedRole([1,2]);
 					</div>
 					<?php if(isset($_SESSION['productItems'])) : ?>
 					<div class="mt-4 text-end">
-						<button type="button" class="btn btn-primary px-4 mx-1" id="saveOrder">Save</button>
+						<!-- Inline form for Save -->
+						<form method="POST" action="order-code.php" style="display:inline-block; margin-right:5px;">
+							<button type="submit" name="saveOrder" class="btn btn-primary px-4 mx-1">Save</button>
+						</form>
+
+						<!-- Other buttons -->
 						<button class="btn btn-info px-4 mx-1" onclick="printMyBillingArea()">Print</button>
-						<button class="btn btn-warning px-4 mx-1" onclick="downloadPDF('<?= $_SESSION['invoice_no']; ?>')">
-						Download PDF</button>
+						<button class="btn btn-warning px-4 mx-1" onclick="downloadPDF('<?= $_SESSION['invoice_no']; ?>')">Download PDF</button>
 					</div>
 					<?php endif;?>
 				</div>

@@ -189,3 +189,24 @@ allowedRole([1,2,3]);
 // Include footer file with common elements
 include('includes/footer.php');
 ?>
+
+<?php if(isset($_SESSION['success_message'])): 
+    $msg = addslashes($_SESSION['success_message']); // escape quotes
+    unset($_SESSION['success_message']);
+?>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Ensure the DOM and SweetAlert are loaded
+    if (typeof swal === "function") {
+        swal({
+            title: "Success",
+            text: "<?= $msg ?>",
+            icon: "success",
+            button: "OK"
+        });
+    } else {
+        console.warn("SweetAlert not loaded");
+    }
+});
+</script>
+<?php endif; ?>
