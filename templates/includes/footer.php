@@ -36,9 +36,9 @@
         
            function resetTimer() {
               clearTimeout(timeout);
-              timeout = setTimeout(logout, 900000); // 15 minutes in milliseconds
+              $env = parse_ini_file('../.env');
+              timeout = setTimeout(logout, $env["SESSION-TIMEOUT"]); // 15 minutes in milliseconds
            }
-        
            function logout() {
             
             window.location.href = '../logout.php?inactivity=true';

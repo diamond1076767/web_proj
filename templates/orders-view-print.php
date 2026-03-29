@@ -49,9 +49,9 @@ allowedRole([1,2,3]);?>
                             <tbody>
                                 <tr>
                                     <td style="text-align: center;" colspan="2">
-                                        <h4 style="font-size: 23px; line-height: 30px; margin: 2px; padding: 0;">TP Advanced Manufacturing Centre</h4>
-                                        <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">21 Tampines Ave 1, Singapore 529757</p>
-                                        <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">Temasek Polytechnic</p>
+                                        <h4 style="font-size: 23px; line-height: 30px; margin: 2px; padding: 0;">SIT Advanced Manufacturing Centre</h4>
+                                        <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">1 Punggol Coast Road, Singapore 828608</p>
+                                        <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">SINGAPORE INSTITUTE OF TECHNOLOGY</p>
                                     </td>
                                 </tr>
                                 <tr>
@@ -66,7 +66,7 @@ allowedRole([1,2,3]);?>
                                         <h5 style="font-size: 20px; line-height: 30px; margin: 0px; padding: 0;">Invoice Details</h5>
                                         <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice No.: <?= validate($orderDataRow['invoice_no'], ENT_QUOTES, 'UTF-8'); ?></p>
                                         <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice Date: <?= validate(date('d M Y')); ?></p>
-                                        <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Address: 21 Tampines Ave 1, Singapore 529757</p>
+                                        <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Address: 1 Punggol Coast Road, Singapore 82860</p>
                                     </td>
                                 </tr>
                             </tbody>
