@@ -15,7 +15,8 @@ if (isset($_SESSION['loggedIn'])) {
         <?php alertMessage(); ?>
 
         <h1 class="display-4 fw-bold mb-4">SIT Advanced Manufacturing Centre</h1>
-        <p class="lead mb-4">Empowering Innovation in Manufacturing & Engineering</p>
+        <p class="lead mb-2">Empowering Innovation in Manufacturing & Engineering</p>
+        <p class="lead mb-4">This is P1-7's LAMP Stack Project for INF1005 - Web Technologies</p>
 
         <?php if (!isset($_SESSION['loggedIn'])) : ?>
             <a href="login.php" class="btn btn-primary btn-lg px-5 py-3 shadow">Login</a>

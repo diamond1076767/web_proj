@@ -430,7 +430,7 @@ if (isset($_POST['resetBtn'])) {
 
     $data = [
         'roleID'        => 3,
-        'requesterName' => $requesterName, // make sure this is always set
+        'requesterName' => $requesterName, 
         'userName'      => $username,
         'fullName'      => $fullname,
         'email'         => $encryptemail,
