@@ -62,7 +62,7 @@ allowedRole([1, 2, 3]);
 
         // Validate formats
         if (!isValidEmailFormat($inputs['email'])) {
-            redirect('admin-create.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
+            redirect('admin-create.php', 'Invalid Email Address. Format: <email>@tpamc.com');
         }
         if (!is_numeric($inputs['phone'])) {
             redirect('admin-create.php', 'Invalid Phone Number. Please enter a numeric value.');
@@ -128,7 +128,7 @@ allowedRole([1, 2, 3]);
 
     // Validate email and phone formats
     if (!isValidEmailFormat($inputs['email'])) {
-        redirect('admin-edit.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
+        redirect('admin-edit.php', 'Invalid Email Address. Format: <email>@tpamc.com');
     }
     if (!is_numeric($inputs['phone'])) {
         redirect('admin-edit.php', 'Invalid Phone Number. Please enter a numeric value.');
@@ -373,7 +373,7 @@ if (isset($_POST['resetBtn'])) {
         'quantity' => $quantity,
         'cost' => $price,
         'description' => $description,
-        'imageID' => $imageID,
+        'image' => $image,
         'status' => $status
     ];
 
@@ -430,7 +430,7 @@ if (isset($_POST['resetBtn'])) {
 
     $data = [
         'roleID'        => 3,
-        'requesterName' => $requesterName, 
+        'requesterName' => $requesterName, // make sure this is always set
         'userName'      => $username,
         'fullName'      => $fullname,
         'email'         => $encryptemail,
@@ -605,7 +605,7 @@ if (isset($_POST['resetBtn'])) {
             }
 
             if (!isValidEmailFormat($email)) {
-                redirect('user-request.php', 'Invalid Email Address. Format: <email>@amc.tp.edu.sg');
+                redirect('user-request.php', 'Invalid Email Address. Format: <email>@tpamc.com');
             }
             
             // Check if email is used by another user
@@ -742,7 +742,7 @@ if (isset($_POST['resetBtn'])) {
 
     // Email validation & encryption
     if (!isValidEmailFormat($email)) {
-        redirect('profile-edit.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
+        redirect('profile-edit.php', 'Invalid Email Address. Format: <email>@tpamc.com');
     }
     $emailCheck = mysqli_query($con, "SELECT * FROM user WHERE email='$email' AND _id != '$userID'");
     if ($emailCheck && mysqli_num_rows($emailCheck) > 0) {

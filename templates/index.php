@@ -103,16 +103,10 @@ allowedRole([1,2,3]);?>
                 <div class="card card-body border-success p-3" style="border-width:medium">
                     <p class="text-sm mb-0 text-capitalize">Pending User Requests</p>
                     <h5 class="font-bold mb-0">
-                    <?php 
-                    $result = mysqli_query($con, "
-                        SELECT COUNT(*) as total 
-                        FROM request_user 
-                        WHERE status='Pending'
-                    ");
-
-                    $row = mysqli_fetch_assoc($result);
-                    echo $row['total'] ?? 0;
-                    ?>
+                        <?php 
+                        $totalRequests = mysqli_query($con, "SELECT * FROM request_user WHERE status='Pending' AND userID='$userID'");
+                        echo ($totalRequests && mysqli_num_rows($totalRequests) > 0) ? mysqli_num_rows($totalRequests) : "0";
+                        ?>
                     </h5>
                 </div>
             </div>
@@ -122,16 +116,10 @@ allowedRole([1,2,3]);?>
                     <p class="text-sm mb-0 text-capitalize">Approved User Requests</p>
                     <h5 class="font-bold mb-0">
                         <?php 
-                        $result = mysqli_query($con, "
-                            SELECT COUNT(*) as total 
-                            FROM request_user 
-                            WHERE status='Approved'
-                        ");
-
-                        $row = mysqli_fetch_assoc($result);
-                        echo $row['total'] ?? 0;
+                        $totalRequests = mysqli_query($con, "SELECT * FROM request_user WHERE status='Approved' AND userID='$userID'");
+                        echo ($totalRequests && mysqli_num_rows($totalRequests) > 0) ? mysqli_num_rows($totalRequests) : "0";
                         ?>
-                        </h5>
+                    </h5>
                 </div>
             </div>
 

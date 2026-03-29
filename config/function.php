@@ -5,6 +5,11 @@ session_regenerate_id(true);
 
 require 'dbcon.php';
 
+// Output escaping helper - use h() when echoing any user-supplied data
+function h($string) {
+    return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
+}
+
 // Input field validation
 function validate($inputData)
 {
@@ -24,7 +29,7 @@ function redirect($url, $status)
 {
     $_SESSION['status'] = $status;
     header('Location: ' . $url);
-    exit();
+    exit(0);
 }
 
 function alertMessage()
@@ -48,12 +53,19 @@ function insert($tableName, $data)
     $columns = array_keys($data);
     $values = array_values($data);
     
-    $finalColumn = implode(',',$columns);
-    $finalValues = "'".implode("', '",$values)."'";
+    $finalColumn = implode(',', $columns);
+    $placeholders = implode(',', array_fill(0, count($values), '?'));
+    $types = str_repeat('s', count($values));
     
-    $query = "INSERT INTO $table ($finalColumn) VALUES ($finalValues)";
-    $result = mysqli_query($con, $query);
-    return $result;
+    $query = "INSERT INTO $table ($finalColumn) VALUES ($placeholders)";
+    $stmt = mysqli_prepare($con, $query);
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, $types, ...$values);
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $result;
+    }
+    return false;
 }
 
 
@@ -66,44 +78,62 @@ function update($tableName, $_id, $data){
     $table = validate($tableName);
     $_id = validate($_id);
     
-    $updateDataString = "";
+    $setClauses = [];
+    $values = [];
+    $types = '';
     
     foreach($data as $column => $value){
-        
-        $updateDataString .= $column.'='."'$value',";
+        $setClauses[] = "$column = ?";
+        $values[] = $value;
+        $types .= 's';
     }
     
-    $finalUpdateData = substr(trim($updateDataString),0,-1);
+    $finalSet = implode(', ', $setClauses);
+    $values[] = $_id;
+    $types .= 'i';
     
-    $query = "UPDATE $table SET $finalUpdateData WHERE _id='$_id'";
-    $result = mysqli_query($con, $query);
-    return $result;
+    $query = "UPDATE $table SET $finalSet WHERE _id = ?";
+    $stmt = mysqli_prepare($con, $query);
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, $types, ...$values);
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $result;
+    }
+    return false;
 }
 
 // Update user data using this function
 function updateData($tableName, $_id, $data){
+    
     global $con;
     
     $table = validate($tableName);
     $_id = validate($_id);
     
-    $updateDataParts = [];
+    $setClauses = [];
+    $values = [];
+    $types = '';
     
     foreach($data as $column => $value){
-        if ($value === NULL) {
-            $updateDataParts[] = "$column = NULL"; // Proper NULL without quotes
-        } else {
-            $escapedValue = mysqli_real_escape_string($con, $value);
-            $updateDataParts[] = "$column = '$escapedValue'";
-        }
+        $setClauses[] = "$column = ?";
+        $values[] = $value;
+        $types .= 's';
     }
     
-    $updateDataString = implode(", ", $updateDataParts);
+    $finalSet = implode(', ', $setClauses);
+    $values[] = $_id;
+    $types .= 'i';
     
-    $query = "UPDATE $table SET $updateDataString, updated_at = CURRENT_TIMESTAMP WHERE _id='$_id'";
-    $result = mysqli_query($con, $query);
-    
-    return $result;
+    $query = "UPDATE $table SET $finalSet, updated_at = CURRENT_TIMESTAMP WHERE _id = ?";
+    $stmt = mysqli_prepare($con, $query);
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, $types, ...$values);
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $result;
+    }
+    return false;
 }
 
 function getColourName($colourID, $status = NULL)
@@ -212,8 +242,14 @@ function getById($tableName, $_id){
     $table = validate($tableName);
     $_id = validate($_id);
     
-    $query = "SELECT * FROM $table WHERE _id='$_id' LIMIT 1";
-    $result = mysqli_query($con,$query);
+    $query = "SELECT * FROM $table WHERE _id = ? LIMIT 1";
+    $stmt = mysqli_prepare($con, $query);
+    
+    if($stmt){
+        mysqli_stmt_bind_param($stmt, "i", $_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+    }
     
     if($result){
         
@@ -245,6 +281,7 @@ function getById($tableName, $_id){
 }
 
 // Delete data from database using id
+// Returns true on success, 'FK_CONSTRAINT' on foreign key error, false on other errors
 function delete($tableName,$_id){
     
     global $con;
@@ -253,8 +290,16 @@ function delete($tableName,$_id){
     $_id = validate($_id);
     
     $query = "DELETE FROM $table WHERE _id='$_id' LIMIT 1";
-    $result = mysqli_query($con,$query);
-    return $result;
+    
+    try {
+        $result = mysqli_query($con,$query);
+        return $result;
+    } catch (mysqli_sql_exception $e) {
+        if ($e->getCode() == 1451) {
+            return 'FK_CONSTRAINT';
+        }
+        return false;
+    }
 }
 
 function checkParamId($type){
@@ -383,11 +428,10 @@ function checkExistingMail($email) {
 }
 
 function encryption($var){
-    $env = parse_ini_file("../.env");
-    $key = $env["ENCRYPTION_KEY"];
-    $AES256_CBC = $env["AES256_CBC"];
+    $key = "amcsuper secretkey";
+    $AES256_CBC = "aes-256-cbc";
     
-    $iv = $env["ENCRYPTION_IV"];
+    $iv = "1234567890123456";
     
     // Encryption
     $crypttext = openssl_encrypt($var, $AES256_CBC, $key, 0, $iv);
@@ -396,26 +440,27 @@ function encryption($var){
 }
 
 function decryption($encrypted){
-    $env = parse_ini_file("../.env");
-    $key = $env["ENCRYPTION_KEY"];
-    $AES256_CBC = $env["AES256_CBC"];
+    $key = "amcsuper secretkey";
+    $AES256_CBC = "aes-256-cbc";
     
-    // Extract the fixed IV size
-    $iv_size = openssl_cipher_iv_length($AES256_CBC);
+    // Use the same fixed IV as encryption()
+    $iv = "1234567890123456";
+    $iv_len = strlen($iv);
     
     // Decode the base64 encoded string
     $decoded = base64_decode($encrypted);
     
-    // Extract the fixed IV
-    $iv = substr($decoded, 0, $iv_size);
+    if ($decoded === false || strlen($decoded) <= $iv_len) {
+        return '';
+    }
     
-    // Extract the encrypted text
-    $crypttext_dec = substr($decoded, $iv_size);
+    // Strip the prepended IV text to get the base64 ciphertext
+    $crypttext_dec = substr($decoded, $iv_len);
     
     // Decryption
     $decryptedtext = openssl_decrypt($crypttext_dec, $AES256_CBC, $key, 0, $iv);
     
-    return $decryptedtext;
+    return $decryptedtext !== false ? $decryptedtext : '';
 }
 
 function checkCustomer($phone) {
@@ -442,11 +487,37 @@ function logoutSession() {
     
 }
 
+function saveSecretToDatabase($userId, $secret) {
+    global $con;
+
+    $secret = encryption($secret);
+    // Prepare and execute a query to save the secret to the database
+    $query = "UPDATE user SET auth_secret=? WHERE _id=?";
+    $stmt = $con->prepare($query);
+    $stmt->bind_param("si", $secret, $userId);
+    $stmt->execute();
+
+    // Close the statement
+    $stmt->close();
+}
 
 function isAlphabeticFullName($fullName) {
     // Remove spaces and check if all characters are alphabetic
     $cleanedFullName = str_replace(' ', '', $fullName);
     return ctype_alpha($cleanedFullName);
+}
+
+// Role-based access control: restrict page access to specific roles
+function allowedRole($roles = []) {
+    if (!isset($_SESSION['loggedInUser']['roleID'])) {
+        redirect('../login.php', 'Login to continue..');
+        exit();
+    }
+    $userRole = (int) $_SESSION['loggedInUser']['roleID'];
+    if (!in_array($userRole, $roles)) {
+        redirect('index.php', 'You do not have permission to access this page.');
+        exit();
+    }
 }
 
 function isValidEmailFormat($email) {
@@ -459,25 +530,8 @@ function isValidEmailFormat($email) {
     $emailParts = explode('@', $email);
     $domain = end($emailParts);
 
-    // Check if the domain is "@sit.singaporetech.edu.sg"
-    $env = parse_ini_file("../.env");
-    return (strtolower($domain) === $env["SITE_DOMAIN_NAME"]);
-}
-
-function allowedRole($allowedRoles = []) {
-    // Check if user is logged in
-    if (!isset($_SESSION['loggedInUser']['roleID'])) {
-        redirect('index.php', 'Please login first.');
-        exit();
-    }
-
-    $userRole = $_SESSION['loggedInUser']['roleID'];
-
-    // Check if role is allowed
-    if (!in_array($userRole, $allowedRoles)) {
-        redirect('index.php', 'Access Denied.');
-        exit();
-    }
+    // Check if the domain is "@tpamc.com"
+    return (strtolower($domain) === 'tpamc.com');
 }
 
 ?>

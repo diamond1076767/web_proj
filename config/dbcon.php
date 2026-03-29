@@ -1,18 +1,14 @@
 <?php
+$db_hostname = "127.0.0.1";
+$db_username = "root";
+$db_password = "root";
+$db_database = "tpamc";
 
-$config = parse_ini_file(__DIR__ . '/../.env', true);
+// Set to true to disable 2FA for evaluator/testing login
+$disable_2fa = true;
 
-if (!$config) {
-    die(".env file not found. Please create one in project root.");
-}
-
-$db_host = $config['database']['DB_SERVER'] ?? 'localhost';
-$db_user = $config['database']['USERNAME'] ?? 'root';
-$db_pass = $config['database']['PASSWORD'] ?? '';
-$db_name = $config['database']['DB_NAME'] ?? '';
-
-$con = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
-
+$con = mysqli_connect($db_hostname, $db_username, $db_password, $db_database);
 if (!$con) {
     die("Connection Failed: " . mysqli_connect_error());
 }
+?>
