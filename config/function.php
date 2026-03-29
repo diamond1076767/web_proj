@@ -383,10 +383,11 @@ function checkExistingMail($email) {
 }
 
 function encryption($var){
-    $key = "amcsuper secretkey";
-    $AES256_CBC = "aes-256-cbc";
+    $env = parse_ini_file("../.env");
+    $key = $env["ENCRYPTION_KEY"];
+    $AES256_CBC = $env["AES256_CBC"];
     
-    $iv = "1234567890123456";
+    $iv = $env["ENCRYPTION_IV"];
     
     // Encryption
     $crypttext = openssl_encrypt($var, $AES256_CBC, $key, 0, $iv);
@@ -395,8 +396,9 @@ function encryption($var){
 }
 
 function decryption($encrypted){
-    $key = "amcsuper secretkey";
-    $AES256_CBC = "aes-256-cbc";
+    $env = parse_ini_file("../.env");
+    $key = $env["ENCRYPTION_KEY"];
+    $AES256_CBC = $env["AES256_CBC"];
     
     // Extract the fixed IV size
     $iv_size = openssl_cipher_iv_length($AES256_CBC);
@@ -458,7 +460,8 @@ function isValidEmailFormat($email) {
     $domain = end($emailParts);
 
     // Check if the domain is "@sit.singaporetech.edu.sg"
-    return (strtolower($domain) === 'sit.singaporetech.edu.sg');
+    $env = parse_ini_file("../.env");
+    return (strtolower($domain) === $env["SITE_DOMAIN_NAME"]);
 }
 
 function allowedRole($allowedRoles = []) {
