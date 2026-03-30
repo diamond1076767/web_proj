@@ -74,11 +74,11 @@ if (isset($_POST['loginBtn'])){
     ];
 
     if ($row['first_log'] == 1){
-        header("location: change-password.php");
+        header("location: templates/change-password.php");
         exit();
     }
 
-    // 8. Redirect all users to templates/index.php
+    // Redirect all users to templates/index.php (unified dashboard)
     redirect('templates/index.php', 'Logged In Successfully');
 }
 ?>

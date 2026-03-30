@@ -605,7 +605,7 @@ if (isset($_POST['resetBtn'])) {
             }
 
             if (!isValidEmailFormat($email)) {
-                redirect('user-request.php', 'Invalid Email Address. Format: <email>@amc.tp.edu.sg');
+                redirect('user-request.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
             }
             
             // Check if email is used by another user
