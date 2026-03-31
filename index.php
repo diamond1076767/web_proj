@@ -15,7 +15,7 @@ if (isset($_SESSION['loggedIn'])) {
         <div class="row align-items-center">
             <div class="col-lg-7 py-5">
                 <?php alertMessage(); ?>
-                <h1 class="display-4 fw-bold mb-3">TP Advanced Manufacturing Centre</h1>
+                <h1 class="display-4 fw-bold mb-3">SG Advanced Manufacturing Centre</h1>
                 <p class="lead mb-4" style="opacity: 0.9;">
                     Your trusted partner in precision manufacturing. We specialise in high-quality custom parts, 
                     advanced prototyping, and industrial-grade components for businesses of all sizes.
@@ -39,7 +39,7 @@ if (isset($_SESSION['loggedIn'])) {
 <!-- Why Choose Us -->
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center fw-bold mb-2">Why Choose TP AMC?</h2>
+        <h2 class="text-center fw-bold mb-2">Why Choose SG AMC?</h2>
         <p class="text-center text-muted mb-5">Delivering excellence in every component we manufacture</p>
         <div class="row g-4">
             <div class="col-md-4">

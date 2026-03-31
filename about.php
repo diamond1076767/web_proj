@@ -5,7 +5,7 @@
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center text-white">
-                <h1 class="display-5 fw-bold mb-3">About TP AMC</h1>
+                <h1 class="display-5 fw-bold mb-3">About SG AMC</h1>
                 <p class="lead" style="opacity: 0.9;">
                     Pioneering advanced manufacturing solutions since 2015. We combine cutting-edge technology 
                     with decades of engineering expertise.
@@ -22,7 +22,7 @@
             <div class="col-lg-6">
                 <h2 class="fw-bold mb-3">Our Story</h2>
                 <p class="text-muted">
-                    TP Advanced Manufacturing Centre was founded in 2015 with a simple mission: to make 
+                    SG Advanced Manufacturing Centre was founded in 2015 with a simple mission: to make 
                     precision manufacturing accessible to businesses of all sizes. Starting as a small workshop 
                     with just three CNC machines, we have grown into a full-service manufacturing facility 
                     serving clients across Southeast Asia.
@@ -92,7 +92,7 @@
 <section class="py-5">
     <div class="container">
         <h2 class="text-center fw-bold mb-2">Our Leadership Team</h2>
-        <p class="text-center text-muted mb-5">The people driving innovation at TP AMC</p>
+        <p class="text-center text-muted mb-5">The people driving innovation at SG AMC</p>
         <div class="row g-4 justify-content-center">
             <div class="col-md-4 col-sm-6">
                 <div class="card border-0 shadow-sm text-center p-4 h-100">
@@ -154,7 +154,7 @@
                 <div class="card border-0 shadow-sm p-4 text-center h-100">
                     <i class="fas fa-envelope fa-2x text-primary mb-3" aria-hidden="true"></i>
                     <h6 class="fw-bold">Email</h6>
-                    <p class="text-muted small mb-0">enquiry@tpamc.com</p>
+                    <p class="text-muted small mb-0">enquiry@inf1005p17.duckdns.org.com</p>
                 </div>
             </div>
         </div>

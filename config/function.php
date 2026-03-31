@@ -459,7 +459,7 @@ function isValidEmailFormat($email) {
     $emailParts = explode('@', $email);
     $domain = end($emailParts);
 
-    // Check if the domain is "@sit.singaporetech.edu.sg"
+    // Check if the domain is "@inf1005p17.duckdns.org"
     $env = parse_ini_file("../.env");
     return (strtolower($domain) === $env["SITE_DOMAIN_NAME"]);
 }

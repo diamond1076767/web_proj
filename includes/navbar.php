@@ -4,7 +4,7 @@
 	<div class="container">
 
 		<a class="navbar-brand fw-bold" href="index.php" style="letter-spacing: 0.05em;">
-			<i class="fas fa-boxes-stacking me-2" style="opacity:0.85;" aria-hidden="true"></i>TP AMC
+			<i class="fas fa-boxes-stacking me-2" style="opacity:0.85;" aria-hidden="true"></i>SG AMC
 		</a>
 
 		<button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"

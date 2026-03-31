@@ -62,7 +62,7 @@ allowedRole([1, 2, 3]);
 
         // Validate formats
         if (!isValidEmailFormat($inputs['email'])) {
-            redirect('admin-create.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
+            redirect('admin-create.php', 'Invalid Email Address. Format: <email>@inf1005p17.duckdns.org');
         }
         if (!is_numeric($inputs['phone'])) {
             redirect('admin-create.php', 'Invalid Phone Number. Please enter a numeric value.');
@@ -128,7 +128,7 @@ allowedRole([1, 2, 3]);
 
     // Validate email and phone formats
     if (!isValidEmailFormat($inputs['email'])) {
-        redirect('admin-edit.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
+        redirect('admin-edit.php', 'Invalid Email Address. Format: <email>@inf1005p17.duckdns.org');
     }
     if (!is_numeric($inputs['phone'])) {
         redirect('admin-edit.php', 'Invalid Phone Number. Please enter a numeric value.');
@@ -605,7 +605,7 @@ if (isset($_POST['resetBtn'])) {
             }
 
             if (!isValidEmailFormat($email)) {
-                redirect('user-request.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
+                redirect('user-request.php', 'Invalid Email Address. Format: <email>@inf1005p17.duckdns.org');
             }
             
             // Check if email is used by another user
@@ -742,7 +742,7 @@ if (isset($_POST['resetBtn'])) {
 
     // Email validation & encryption
     if (!isValidEmailFormat($email)) {
-        redirect('profile-edit.php', 'Invalid Email Address. Format: <email>@sit.singaporetech.edu.sg');
+        redirect('profile-edit.php', 'Invalid Email Address. Format: <email>@inf1005p17.duckdns.org');
     }
     $emailCheck = mysqli_query($con, "SELECT * FROM user WHERE email='$email' AND _id != '$userID'");
     if ($emailCheck && mysqli_num_rows($emailCheck) > 0) {
