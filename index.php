@@ -123,6 +123,7 @@ if (isset($_SESSION['loggedIn'])) {
     <div class="container text-center">
         <h2 class="fw-bold mb-3">Ready to Get Started?</h2>
         <p class="lead mb-4" style="opacity: 0.85;">Contact our team for custom quotes and bulk order inquiries.</p>
+        <p class="lead mb-4" style="opacity: 0.85;">This is a copyright of the Group P1-7 INF1005 Module. Every Item Listed here IS NOT REAL and a simulated inventory</p>
         <div class="d-flex justify-content-center gap-3 flex-wrap">
             <a href="about.php" class="btn btn-light btn-lg px-4">
                 <i class="fas fa-envelope me-2" aria-hidden="true"></i>Contact Us

@@ -99,7 +99,7 @@ if(isset($_SESSION['loggedIn'])){
     border-radius: 0 6px 6px 0;
     padding: 0.6rem 0.9rem;
     font-size: 0.9rem;
-    tranion: border-color 0.15s, box-shadow 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .login-body .form-control:focus {
