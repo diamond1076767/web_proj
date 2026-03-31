@@ -32,8 +32,6 @@ if ($result) {
         }
 
         if (mysqli_num_rows($checkCustomer) > 0) {
-            $customerData = mysqli_fetch_assoc($checkCustomer);
-
             $data = [
                 'customerID' => $row['customerID'],
                 'tracking_no' => rand(11111, 99999),
