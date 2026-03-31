@@ -1,7 +1,6 @@
 <?php
 
 session_start();
-session_regenerate_id(true);
 
 require 'dbcon.php';
 
@@ -307,6 +306,34 @@ function getCount($tableName) {
     }else{
         return 'Something Went Wrong!';
     }
+}
+
+function getCountWhere($tableName, array $conditions = []) {
+    global $con;
+
+    $table = validate($tableName);
+    $query = "SELECT COUNT(*) AS total FROM $table";
+
+    if (!empty($conditions)) {
+        $whereParts = [];
+
+        foreach ($conditions as $column => $value) {
+            $safeColumn = preg_replace('/[^A-Za-z0-9_]/', '', (string) $column);
+            $safeValue = mysqli_real_escape_string($con, (string) $value);
+            $whereParts[] = "$safeColumn = '$safeValue'";
+        }
+
+        $query .= " WHERE " . implode(' AND ', $whereParts);
+    }
+
+    $result = mysqli_query($con, $query);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $row = mysqli_fetch_assoc($result);
+    return (int) ($row['total'] ?? 0);
 }
 
 function recordExistsByColumn($tableName, $columnName, $value, $excludeId = null) {

@@ -33,13 +33,7 @@ allowedRole([1,2,3]);?>
         <div class="col-md-3 mb-3">
             <div class="card card-body border-warning p-3" style="border-width:medium">
                 <p class="text-sm mb-0 text-capitalize">Today Orders</p>
-                <h5 class="fw-bold mb-0">
-                    <?php 
-                    $todayDate = date('Y-m-d');
-                    $todayOrders = mysqli_query($con, "SELECT * FROM sales_order WHERE order_date='$todayDate'");
-                    echo ($todayOrders && mysqli_num_rows($todayOrders) > 0) ? mysqli_num_rows($todayOrders) : "0";
-                    ?>
-                </h5>
+                <h5 class="fw-bold mb-0"><?= getCountWhere('sales_order', ['order_date' => date('Y-m-d')]) ?></h5>
             </div>
         </div>
 
@@ -68,24 +62,14 @@ allowedRole([1,2,3]);?>
             <div class="col-md-3 mb-3">
                 <div class="card card-body border-success p-3" style="border-width:medium">
                     <p class="text-sm mb-0 text-capitalize">Approved User Requests</p>
-                    <h5 class="font-bold mb-0">
-                        <?php 
-                        $totalRequests = mysqli_query($con, "SELECT * FROM request_user WHERE status='Approved'");
-                        echo ($totalRequests && mysqli_num_rows($totalRequests) > 0) ? mysqli_num_rows($totalRequests) : "0";
-                        ?>
-                    </h5>
+                    <h5 class="font-bold mb-0"><?= getCountWhere('request_user', ['status' => 'Approved']) ?></h5>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card card-body border-danger p-3" style="border-width:medium">
                     <p class="text-sm mb-0 text-capitalize">Pending User Requests</p>
-                    <h5 class="font-bold mb-0">
-                        <?php 
-                        $totalRequests = mysqli_query($con, "SELECT * FROM request_user WHERE status='Pending'");
-                        echo ($totalRequests && mysqli_num_rows($totalRequests) > 0) ? mysqli_num_rows($totalRequests) : "0";
-                        ?>
-                    </h5>
+                    <h5 class="font-bold mb-0"><?= getCountWhere('request_user', ['status' => 'Pending']) ?></h5>
                 </div>
             </div>
         <?php endif; ?>
@@ -102,48 +86,21 @@ allowedRole([1,2,3]);?>
             <div class="col-md-3 mb-3">
                 <div class="card card-body border-success p-3" style="border-width:medium">
                     <p class="text-sm mb-0 text-capitalize">Pending User Requests</p>
-                    <h5 class="font-bold mb-0">
-                        <?php 
-                        $result = mysqli_query($con, "
-                        SELECT COUNT(*) as total 
-                        FROM request_user 
-                        WHERE status='Pending'
-                        ");
-
-                        $row = mysqli_fetch_assoc($result);
-                        echo $row['total'] ?? 0;
-                        ?>
-                    </h5>
+                    <h5 class="font-bold mb-0"><?= getCountWhere('request_user', ['status' => 'Pending']) ?></h5>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card card-body border-danger p-3" style="border-width:medium">
                     <p class="text-sm mb-0 text-capitalize">Approved User Requests</p>
-                    <h5 class="font-bold mb-0">
-                        <?php 
-                        $result = mysqli_query($con, "
-                            SELECT COUNT(*) as total 
-                            FROM request_user 
-                            WHERE status='Approved'
-                        ");
-
-                        $row = mysqli_fetch_assoc($result);
-                        echo $row['total'] ?? 0;
-                        ?>
-                        </h5>
+                    <h5 class="font-bold mb-0"><?= getCountWhere('request_user', ['status' => 'Approved']) ?></h5>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card card-body border-muted p-3" style="border-width:medium">
                     <p class="text-sm mb-0 text-capitalize">Pending Order Requests</p>
-                    <h5 class="font-bold mb-0">
-                        <?php 
-                        $totalRequests = mysqli_query($con, "SELECT * FROM request_order WHERE status='Pending'");
-                        echo ($totalRequests && mysqli_num_rows($totalRequests) > 0) ? mysqli_num_rows($totalRequests) : "0";
-                        ?>
-                    </h5>
+                    <h5 class="font-bold mb-0"><?= getCountWhere('request_order', ['status' => 'Pending']) ?></h5>
                 </div>
             </div>
         <?php endif; ?>
@@ -160,24 +117,14 @@ allowedRole([1,2,3]);?>
             <div class="col-md-3 mb-3">
                 <div class="card card-body border-muted p-3" style="border-width:medium">
                     <p class="text-sm mb-0 text-capitalize">Pending Order Requests</p>
-                    <h5 class="font-bold mb-0">
-                        <?php 
-                        $totalRequests = mysqli_query($con, "SELECT * FROM request_order WHERE status='Pending' AND userID='$userID'");
-                        echo ($totalRequests && mysqli_num_rows($totalRequests) > 0) ? mysqli_num_rows($totalRequests) : "0";
-                        ?>
-                    </h5>
+                    <h5 class="font-bold mb-0"><?= getCountWhere('request_order', ['status' => 'Pending', 'userID' => $userID]) ?></h5>
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <div class="card card-body border-success p-3" style="border-width:medium">
                     <p class="text-sm mb-0 text-capitalize">Approved Order Requests</p>
-                    <h5 class="font-bold mb-0">
-                        <?php 
-                        $totalRequests = mysqli_query($con, "SELECT * FROM request_order WHERE status='Approved' AND userID='$userID'");
-                        echo ($totalRequests && mysqli_num_rows($totalRequests) > 0) ? mysqli_num_rows($totalRequests) : "0";
-                        ?>
-                    </h5>
+                    <h5 class="font-bold mb-0"><?= getCountWhere('request_order', ['status' => 'Approved', 'userID' => $userID]) ?></h5>
                 </div>
             </div>
         <?php endif; ?>

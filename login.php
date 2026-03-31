@@ -1,19 +1,8 @@
 <?php include('includes/header.php');
 
 if(isset($_SESSION['loggedIn'])){
-    $roleID = validate($_SESSION['loggedInUser']['roleID']);
-
-        switch ($roleID) {
-            case 1:
-                header("Location: templates/index.php");
-                exit();
-            case 2:
-                header("Location: templates/index.php");
-                exit();
-            case 3:
-                header("Location: templates/index.php");
-                exit();
-    }
+    header("Location: templates/index.php");
+    exit();
 }
 ?>
 
