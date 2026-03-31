@@ -24,12 +24,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
         <script src="assets/js/custom.js"></script>
-        <?php
-        $env = parse_ini_file('../.env');
-        $sessionTimeout = is_array($env) && isset($env['SESSION-TIMEOUT'])
-            ? (int) $env['SESSION-TIMEOUT']
-            : 900000;
-        ?>
+        <?php $sessionTimeout = (int) getEnvValue('SESSION-TIMEOUT', 900000); ?>
         <script>
             let timeout;
             const inactivityTimeout = <?= json_encode($sessionTimeout) ?>;

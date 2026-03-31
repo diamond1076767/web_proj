@@ -5,6 +5,24 @@ session_regenerate_id(true);
 
 require 'dbcon.php';
 
+function getEnvConfig()
+{
+    static $envConfig = null;
+
+    if ($envConfig === null) {
+        $parsedEnv = parse_ini_file("../.env");
+        $envConfig = is_array($parsedEnv) ? $parsedEnv : [];
+    }
+
+    return $envConfig;
+}
+
+function getEnvValue($key, $default = null)
+{
+    $envConfig = getEnvConfig();
+    return $envConfig[$key] ?? $default;
+}
+
 // Input field validation
 function validate($inputData)
 {
@@ -142,7 +160,7 @@ function getAll($tableName,$status = NULL){
     
     if($status == 'status')
     {
-        $query = "SELECT * FROM $table WHERE status='0";
+        $query = "SELECT * FROM $table WHERE status='0'";
     }
     else
     {
@@ -158,14 +176,7 @@ function getAllVisible($tableName,$status = NULL){
     $table = validate($tableName);
     $status = validate($status);
     
-    if($status == 'status')
-    {
-        $query = "SELECT * FROM $table WHERE status=0";
-    }
-    else
-    {
-        $query = "SELECT * FROM $table WHERE status=0";
-    }
+    $query = "SELECT * FROM $table WHERE status=0";
     return mysqli_query($con, $query);
 }
 
@@ -178,7 +189,7 @@ function getAllManager($tableName,$status = NULL){
     
     if($status == 'status')
     {
-        $query = "SELECT * FROM $table WHERE roleID='2' && status='0";
+        $query = "SELECT * FROM $table WHERE roleID='2' && status='0'";
     }
     else 
     {
@@ -196,7 +207,7 @@ function getAllStaff($tableName,$status = NULL){
     
     if($status == 'status')
     {
-        $query = "SELECT * FROM $table WHERE roleID='3' && status='0";
+        $query = "SELECT * FROM $table WHERE roleID='3' && status='0'";
     }
     else
     {
@@ -287,16 +298,34 @@ function getCount($tableName) {
     
     $table = validate($tableName);
     
-    $query = "SELECT * FROM $table";
+    $query = "SELECT COUNT(*) AS total FROM $table";
     $query_run = mysqli_query($con, $query);
     if($query_run){
-        
-        $totalCount = mysqli_num_rows($query_run);
-        return $totalCount;
+        $row = mysqli_fetch_assoc($query_run);
+        return (int) ($row['total'] ?? 0);
         
     }else{
         return 'Something Went Wrong!';
     }
+}
+
+function recordExistsByColumn($tableName, $columnName, $value, $excludeId = null) {
+    global $con;
+
+    $table = validate($tableName);
+    $column = preg_replace('/[^A-Za-z0-9_]/', '', $columnName);
+    $escapedValue = mysqli_real_escape_string($con, (string) $value);
+    $query = "SELECT 1 FROM $table WHERE $column = '$escapedValue'";
+
+    if ($excludeId !== null && $excludeId !== '') {
+        $excludeId = validate($excludeId);
+        $query .= " AND _id != '$excludeId'";
+    }
+
+    $query .= " LIMIT 1";
+    $result = mysqli_query($con, $query);
+
+    return $result && mysqli_num_rows($result) > 0;
 }
 
 // Function to check if the password is strong
@@ -337,57 +366,30 @@ function isPasswordStrong($password) {
     return true;
 }
 
-function checkExistingPhone($phone) {
-    global $con;
-    $phone = encryption($phone);
-    $phone = mysqli_real_escape_string($con, $phone);
-    $query = "SELECT * FROM customer WHERE telephone = '$phone'";
-    $result = mysqli_query($con, $query);
-    return mysqli_num_rows($result) > 0;
+function checkExistingPhone($phone, $excludeId = null) {
+    return recordExistsByColumn('customer', 'telephone', encryption($phone), $excludeId);
 }
 
-function checkExistingEmail($email) {
-    global $con;
-    $email = encryption($email);
-    $email = mysqli_real_escape_string($con, $email);
-    $query = "SELECT * FROM customer WHERE email = '$email'";
-    $result = mysqli_query($con, $query);
-    return mysqli_num_rows($result) > 0;
+function checkExistingEmail($email, $excludeId = null) {
+    return recordExistsByColumn('customer', 'email', encryption($email), $excludeId);
 }
 
-function checkExistingUsername($username) {
-    global $con;
-
-    $username = mysqli_real_escape_string($con, $username);
-    $query = "SELECT * FROM user WHERE userName = '$username'";
-    $result = mysqli_query($con, $query);
-    return mysqli_num_rows($result) > 0;
+function checkExistingUsername($username, $excludeId = null) {
+    return recordExistsByColumn('user', 'userName', $username, $excludeId);
 }
 
-function checkExistingTelephone($phone) {
-    global $con;
-    $phone = encryption($phone);
-    $phone = mysqli_real_escape_string($con, $phone);
-    $query = "SELECT * FROM user WHERE telephone = '$phone'";
-    $result = mysqli_query($con, $query);
-    return mysqli_num_rows($result) > 0;
+function checkExistingTelephone($phone, $excludeId = null) {
+    return recordExistsByColumn('user', 'telephone', encryption($phone), $excludeId);
 }
 
-function checkExistingMail($email) {
-    global $con;
-    $email = encryption($email);
-    $email = mysqli_real_escape_string($con, $email);
-    $query = "SELECT * FROM user WHERE email = '$email'";
-    $result = mysqli_query($con, $query);
-    return mysqli_num_rows($result) > 0;
+function checkExistingMail($email, $excludeId = null) {
+    return recordExistsByColumn('user', 'email', encryption($email), $excludeId);
 }
 
 function encryption($var){
-    $env = parse_ini_file("../.env");
-    $key = $env["ENCRYPTION_KEY"];
-    $AES256_CBC = $env["AES256_CBC"];
-    
-    $iv = $env["ENCRYPTION_IV"];
+    $key = getEnvValue("ENCRYPTION_KEY");
+    $AES256_CBC = getEnvValue("AES256_CBC");
+    $iv = getEnvValue("ENCRYPTION_IV");
     
     // Encryption
     $crypttext = openssl_encrypt($var, $AES256_CBC, $key, 0, $iv);
@@ -396,9 +398,8 @@ function encryption($var){
 }
 
 function decryption($encrypted){
-    $env = parse_ini_file("../.env");
-    $key = $env["ENCRYPTION_KEY"];
-    $AES256_CBC = $env["AES256_CBC"];
+    $key = getEnvValue("ENCRYPTION_KEY");
+    $AES256_CBC = getEnvValue("AES256_CBC");
     
     // Extract the fixed IV size
     $iv_size = openssl_cipher_iv_length($AES256_CBC);
@@ -460,8 +461,7 @@ function isValidEmailFormat($email) {
     $domain = end($emailParts);
 
     // Check if the domain is "@inf1005p17.duckdns.org"
-    $env = parse_ini_file("../.env");
-    return (strtolower($domain) === $env["SITE_DOMAIN_NAME"]);
+    return (strtolower($domain) === getEnvValue("SITE_DOMAIN_NAME"));
 }
 
 function allowedRole($allowedRoles = []) {
