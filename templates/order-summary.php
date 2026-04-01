@@ -149,8 +149,9 @@ allowedRole([1,2]);
 					<?php if(isset($_SESSION['productItems'])) : ?>
 					<div class="mt-4 text-end">
 						<!-- Inline form for Save -->
-						<form method="POST" action="order-code.php" style="display:inline-block; margin-right:5px;">
-							<button type="submit" name="saveOrder" class="btn btn-primary px-4 mx-1">Save</button>
+						<form method="POST" action="order-code.php" class="saveOrderForm" style="display:inline-block; margin-right:5px;">
+							<input type="hidden" name="saveOrder" value="1">
+							<button type="button" name="saveOrder" class="btn btn-primary px-4 mx-1 saveOrderConfirm" data-confirm-text="Confirm this order?">Save</button>
 						</form>
 
 						<!-- Other buttons -->

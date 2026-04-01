@@ -282,7 +282,7 @@ function checkParamId($type){
 }
 
 function jsonResponse($status,$status_type, $message) {
-    
+
     $response = [
         'status' => $status,
         'status_type' => $status_type,
@@ -416,7 +416,8 @@ function checkExistingMail($email, $excludeId = null) {
 function encryption($var){
     $key = getEnvValue("ENCRYPTION_KEY");
     $AES256_CBC = getEnvValue("AES256_CBC");
-    $iv = getEnvValue("ENCRYPTION_IV");
+    // Ensure IV is at least an empty string to avoid PHP 8.1 warnings
+    $iv = getEnvValue("ENCRYPTION_IV") ?? ""; 
     
     // Encryption
     $crypttext = openssl_encrypt($var, $AES256_CBC, $key, 0, $iv);
@@ -425,25 +426,49 @@ function encryption($var){
 }
 
 function decryption($encrypted){
+    // 1. Basic sanity check
+    if ($encrypted === null || $encrypted === '' || $encrypted === false) {
+        return '';
+    }
+
     $key = getEnvValue("ENCRYPTION_KEY");
     $AES256_CBC = getEnvValue("AES256_CBC");
+    
+    // FIX: Fallback to empty string if .env value is missing
+    $legacyIv = getEnvValue("ENCRYPTION_IV") ?? ""; 
     
     // Extract the fixed IV size
     $iv_size = openssl_cipher_iv_length($AES256_CBC);
     
-    // Decode the base64 encoded string
-    $decoded = base64_decode($encrypted);
-    
-    // Extract the fixed IV
-    $iv = substr($decoded, 0, $iv_size);
-    
-    // Extract the encrypted text
-    $crypttext_dec = substr($decoded, $iv_size);
-    
-    // Decryption
-    $decryptedtext = openssl_decrypt($crypttext_dec, $AES256_CBC, $key, 0, $iv);
-    
-    return $decryptedtext;
+    // 2. Try Current format: base64(iv + base64CipherText)
+    $decoded = base64_decode($encrypted, true);
+    if ($decoded !== false && strlen($decoded) > $iv_size) {
+        $iv = substr($decoded, 0, $iv_size);
+        $crypttext_dec = substr($decoded, $iv_size);
+        
+        $decryptedtext = openssl_decrypt($crypttext_dec, $AES256_CBC, $key, 0, $iv);
+        if ($decryptedtext !== false && $decryptedtext !== "") {
+            return $decryptedtext;
+        }
+    }
+
+    // 3. Try Legacy format: base64CipherText only (uses static IV from .env)
+    // We use @ to suppress warnings here because legacy format is a fallback
+    $decryptedLegacy = @openssl_decrypt($encrypted, $AES256_CBC, $key, 0, $legacyIv);
+    if ($decryptedLegacy !== false && $decryptedLegacy !== "") {
+        return $decryptedLegacy;
+    }
+
+    // 4. Try Additional compatibility: base64(base64CipherText)
+    if ($decoded !== false) {
+        $decryptedLegacyDecoded = @openssl_decrypt($decoded, $AES256_CBC, $key, 0, $legacyIv);
+        if ($decryptedLegacyDecoded !== false && $decryptedLegacyDecoded !== "") {
+            return $decryptedLegacyDecoded;
+        }
+    }
+
+    // 5. Final fallback: If everything failed, it might be plain text
+    return $encrypted; 
 }
 
 function checkCustomer($phone) {

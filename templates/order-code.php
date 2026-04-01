@@ -1,6 +1,7 @@
 <?php 
 include('../config/function.php');
 allowedRole([1,2,3]);
+
 if(!isset($_SESSION['productItems'])){
     $_SESSION['productItems'] = [];
 }
@@ -152,25 +153,23 @@ if(isset($_POST['saveCustomerBtn']))
 }
 
 if(isset($_POST['saveOrder'])){
-    $phone = validate($_SESSION['cphone']);
-    $invoice_no = validate($_SESSION['invoice_no']);
-    $payment_mode = validate($_SESSION['payment_mode']);
-    $userID = validate($_SESSION['loggedInUser']['user_id']);
-    $roleID = $_SESSION['loggedInUser']['roleID'];
+    $phone = validate($_SESSION['cphone'] ?? '');
+    $invoice_no = validate($_SESSION['invoice_no'] ?? '');
+    $payment_mode = validate($_SESSION['payment_mode'] ?? '');
+    $userID = validate($_SESSION['loggedInUser']['user_id'] ?? '');
+    $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
+    $summaryPage = ($roleID == 3) ? 'order-request-summary.php' : 'order-summary.php';
+    $listingPage = ($roleID == 3) ? 'order-request.php' : 'orders.php';
 
     $checkCustomer = mysqli_query($con, "SELECT * FROM customer WHERE telephone ='$phone' LIMIT 1");
     if(!$checkCustomer || mysqli_num_rows($checkCustomer) == 0){
-        $_SESSION['error_message'] = "No Customer Found!";
-        header('Location: order-summary.php');
-        exit;
+        redirect($summaryPage, 'No Customer Found!');
     }
 
     $customerData = mysqli_fetch_assoc($checkCustomer);
 
-    if(!isset($_SESSION['productItems'])){
-        $_SESSION['error_message'] = "No Items to place order!";
-        header('Location: order-summary.php');
-        exit;
+    if(empty($_SESSION['productItems'])){
+        redirect($summaryPage, 'No Items to place order!');
     }
 
     $sessionProducts = $_SESSION['productItems'];
@@ -192,6 +191,9 @@ if(isset($_POST['saveOrder'])){
             'userID' => $userID,
         ];
         $result = insert('sales_order', $data);
+        if(!$result){
+            redirect($summaryPage, 'Something Went Wrong!');
+        }
         $lastOrderId = mysqli_insert_id($con);
 
         foreach($sessionProducts as $prodItem){
@@ -201,12 +203,16 @@ if(isset($_POST['saveOrder'])){
                 'cost' => $prodItem['price'],
                 'quantity' => $prodItem['quantity'],
             ];
-            insert('order_items', $dataOrderItem);
+            if(!insert('order_items', $dataOrderItem)){
+                redirect($summaryPage, 'Something Went Wrong!');
+            }
 
             // Update inventory
             $productQtyData = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM inventory WHERE _id='".$prodItem['_id']."'"));
             $totalProductQuantity = $productQtyData['quantity'] - $prodItem['quantity'];
-            update('inventory', $prodItem['_id'], ['quantity' => $totalProductQuantity]);
+            if(!update('inventory', $prodItem['_id'], ['quantity' => $totalProductQuantity])){
+                redirect($summaryPage, 'Something Went Wrong!');
+            }
         }
 
     } else {
@@ -219,6 +225,9 @@ if(isset($_POST['saveOrder'])){
             'userID' => $userID,
         ];
         $result = insert('request_order', $data);
+        if(!$result){
+            redirect($summaryPage, 'Something Went Wrong!');
+        }
         $lastOrderId = mysqli_insert_id($con);
 
         foreach($sessionProducts as $prodItem){
@@ -228,17 +237,24 @@ if(isset($_POST['saveOrder'])){
                 'cost' => $prodItem['price'],
                 'quantity' => $prodItem['quantity'],
             ];
-            insert('order_request_items', $dataOrderItem);
+            if(!insert('order_request_items', $dataOrderItem)){
+                redirect($summaryPage, 'Something Went Wrong!');
+            }
         }
     }
 
     // Clear session
     unset($_SESSION['productItemIds'], $_SESSION['productItems'], $_SESSION['cphone'], $_SESSION['payment_mode'], $_SESSION['invoice_no']);
 
-    // Set success message and redirect
-    $_SESSION['success_message'] = ($roleID == 1 || $roleID == 2) ? "Order Placed Successfully" : "Order Request Placed Successfully";
-    header('Location: orders.php');
-    exit; // Always exit after header redirect
+    if($roleID == 1 || $roleID == 2){
+        $_SESSION['success_message'] = 'Order Confirmed';
+        header('Location: '.$listingPage);
+        exit;
+    }
+
+    $_SESSION['success_message'] = 'Order Sent';
+    header('Location: '.$listingPage);
+    exit;
 }
 
 ?>

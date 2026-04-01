@@ -82,6 +82,24 @@ $(document).ready(function(){
         }
     });
 });
+
+	$(document).on('click', '.saveOrderConfirm', function () {
+    var $button = $(this);
+    var $form = $button.closest('form');
+    var confirmText = $button.data('confirm-text') || 'Proceed with saving this order?';
+
+    swal({
+        title: "Confirm Save",
+        text: confirmText,
+        icon: "warning",
+        buttons: ["Cancel", "Yes, continue"],
+        dangerMode: false,
+    }).then((willSubmit) => {
+        if (willSubmit) {
+            $form.trigger('submit');
+        }
+    });
+});
 	
 		// Add Customer to customers table
 	$(document).on('click', '.saveCustomer', function() {

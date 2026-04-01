@@ -154,3 +154,21 @@ $orders = mysqli_query($con, $query);
 </div>
 
 <?php include('includes/footer.php'); ?>
+
+<?php if(isset($_SESSION['success_message'])):
+    $msg = addslashes($_SESSION['success_message']);
+    unset($_SESSION['success_message']);
+?>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    if (typeof swal === "function") {
+        swal({
+            title: "Success",
+            text: "<?= $msg ?>",
+            icon: "success",
+            button: "OK"
+        });
+    }
+});
+</script>
+<?php endif; ?>

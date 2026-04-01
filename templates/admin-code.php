@@ -493,55 +493,47 @@ if (isset($_POST['resetBtn'])) {
     if(isset($_POST['updateCustomer'])){
         
         $customerId = validate($_POST['customerId']);
-        $customerData = getById('customer', $customerId);
-        if($customerData['status'] != 200){
-            redirect('customer.php', 'No Such Customer Found');
-        }
         
+        // 1. Read plain inputs
         $name = validate($_POST['name']);
         $companyName = validate($_POST['companyName']);
-        
         $email = validate($_POST['email']);
         $phone = validate($_POST['phone']);
-        
-        // Check if phone number is numeric
+
         if (!is_numeric($phone)) {
-            redirect('customer-edit.php', 'Invalid Phone Number. Please enter a numeric value.');
+            redirect("customer-edit.php", "Invalid Phone Number.");
         }
-        
-        // Check if phone number is used by another customer
-        if (checkExistingPhone($phone, $customerId)) {
-            redirect('customer-edit.php', 'Phone Number Already Used By Another Customer.');
-        }
-        $encryptphone = encryption($phone);
 
-        // Check if email is a valid format
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            redirect('customer-edit.php', 'Invalid Email Address.');
+        // checkExistingPhone/checkExistingEmail already encrypt internally
+        if (checkExistingPhone($phone, $customerId)) { 
+            redirect("customer-edit.php", "Phone Number Already Used.");
         }
         
-        // Check if email is used by another user
         if (checkExistingEmail($email, $customerId)) {
-            redirect('customer-edit.php', 'Email Already Used By Another Customer.');
-        }
-        $encryptemail = encryption($email);
-        
-        if (!isAlphabeticFullName($name)) {
-            redirect('customer-edit.php', 'Please enter alphabetic characters.');
+            redirect("customer-edit.php", "Email Already Used.");
         }
 
+        if (!isAlphabeticFullName($name)) {
+            redirect("customer-edit.php", "Please enter alphabetic characters for name.");
+        }
+
+        $encryptPhone = encryption($phone);
+        $encryptEmail = encryption($email);
+
+        // 4. Prepare Data for Update
         $data = [
             'companyName' => $companyName,
             'customerName' => $name,
-            'email' => $encryptemail,
-            'telephone' => $encryptphone
+            'email' => $encryptEmail,
+            'telephone' => $encryptPhone
         ];
+
         $result = updateData('customer', $customerId, $data);
         
         if ($result) {
-            redirect('customer-edit.php', 'Customer Updated Successfully!');
+            redirect('customer.php', 'Customer Updated Successfully!');
         } else {
-            redirect('customer-edit.php', 'Something Went Wrong!');
+            redirect('customer-edit.php', 'Something Went Wrong during the update.');
         }
     }
 

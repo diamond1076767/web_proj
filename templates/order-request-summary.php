@@ -7,19 +7,7 @@ if (!isset($_SESSION['productItems'])) {
     header('Location: order-request-create.php');
     exit(); // Added exit to prevent further execution
 }
-allowedRole([2,3]);
-
-if (isset($_SESSION['error_message'])) {
-    echo "<script>
-        swal({
-            title: 'Error',
-            text: '". $_SESSION['error_message'] ."',
-            icon: 'error',
-            button: 'OK'
-        });
-    </script>";
-    unset($_SESSION['error_message']);
-}
+allowedRole([3]);
 ?>
 
 
@@ -42,15 +30,11 @@ if (isset($_SESSION['error_message'])) {
                         // Check if customer phone is set in the session
                         if (isset($_SESSION['cphone'])) {
                             $phone = validate($_SESSION['cphone']);
+                            $invoiceNo = validate($_SESSION['invoice_no'] ?? '');
+                            $customerQuery = mysqli_query($con, "SELECT * FROM customer WHERE telephone='$phone' LIMIT 1");
 
-                            // Validate customer phone and retrieve data using prepared statement
-                            $customerQuery = mysqli_prepare($con, "SELECT * FROM customer WHERE telephone=? LIMIT 1");
-                            mysqli_stmt_bind_param($customerQuery, "i", $phone);
-                            mysqli_stmt_execute($customerQuery);
-                            $result = mysqli_stmt_get_result($customerQuery);
-
-                            if ($result && mysqli_num_rows($result) > 0) {
-                                $cRowData = mysqli_fetch_assoc($result);
+                            if ($customerQuery && mysqli_num_rows($customerQuery) > 0) {
+                                $cRowData = mysqli_fetch_assoc($customerQuery);
                                 ?>
                                 <!-- Display customer and invoice details -->
                                 <table style="width: 100%;margin-bottom: 20px;">
@@ -72,8 +56,8 @@ if (isset($_SESSION['error_message'])) {
                                             </td>
                                             <td align="end">
                                                 <h5 style="font-size: 20px; line-height: 30px; margin: 0px; padding: 0;">Invoice Details</h5>
-                                                <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice No.: -</p>
-                                                <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice Date: -</p>
+                                                <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice No.: <?= $invoiceNo ?: '-'; ?></p>
+                                                <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice Date: <?= date('d M Y'); ?></p>
                                                 <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Address: 1 Punggol Coast Road,Singapore 828608</p>
                                             </td>
                                         </tr>
@@ -152,7 +136,13 @@ if (isset($_SESSION['error_message'])) {
                     <?php if (isset($_SESSION['productItems'])) : ?>
                         <!-- Save button -->
                         <div class="mt-4 text-end">
-                            <button type="button" class="btn btn-primary px-4 mx-1" id="saveOrder">Save</button>
+                            <form method="POST" action="order-code.php" class="saveOrderForm" style="display:inline-block; margin-right:5px;">
+                                <input type="hidden" name="saveOrder" value="1">
+                                <button type="button" name="saveOrder" class="btn btn-primary px-4 mx-1 saveOrderConfirm" data-confirm-text="Send this order request?">Save</button>
+                            </form>
+                            
+                            <button class="btn btn-info px-4 mx-1" onclick="printMyBillingArea()">Print</button>
+                            <button class="btn btn-warning px-4 mx-1" onclick="downloadPDF('<?= $_SESSION['invoice_no'] ?? 'NA'; ?>')">Download PDF</button>
                         </div>
                     <?php endif; ?>
                 </div>
