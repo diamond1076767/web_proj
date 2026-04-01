@@ -47,7 +47,7 @@ function redirect($url, $status)
 function alertMessage()
 {
     if(isset($_SESSION['status'])) {
-        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert" aria-live="polite">
             <h6>'. $_SESSION['status'].'</h6>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>';

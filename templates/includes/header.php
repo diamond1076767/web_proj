@@ -60,4 +60,4 @@ if (isset($_SESSION['loggedInUser']['roleID'])) {
 <?php include("sidebar.php")?>
 
 <div id="layoutSidenav_content">
-<main>
+<main id="main-content">

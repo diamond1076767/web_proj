@@ -26,7 +26,7 @@ allowedRole([1,2,3]);?>
                         <div class="account-settings">
                             <div class="user-profile">
                                 <div class="user-avatar">
-                                    <img src="<?= $avatar;?>" style="width:100px;height:100px;" alt="Img" />
+                                    <img src="<?= $avatar;?>" style="width:100px;height:100px;" alt="<?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8') ?> profile avatar" />
                                 </div>
                                 <label>Username</label>
                                 <h5><?= $username?></h5>
@@ -85,7 +85,7 @@ allowedRole([1,2,3]);?>
                                 <input type="file" name="image" class="form-control"/>
                             </div>
                         </div>
-                        </br>
+                        <br>
                         <div class="row gutters">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <!-- Buttons for updating and logging out -->

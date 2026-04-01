@@ -124,4 +124,4 @@ allowedRole([1,2,3]);
 </div>
 
 <?php include("includes/footer.php"); ?>
-?>
+

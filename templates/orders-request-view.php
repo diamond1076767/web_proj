@@ -58,17 +58,17 @@ allowedRole([2,3]);
                                         Order Date:
                                         <span class="fw-bold"><?= validate(date("Y-m-d", strtotime($orderData['created_at']))) ?></span>
                                     </label>
-                                    </br>
+                                    <br>
                                     <label class="mb-1">
                                         Order Status:
                                         <span class="fw-bold"><?= validate($orderData['status']); ?></span>
                                     </label>
-                                    </br>
+                                    <br>
                                     <label class="mb-1">
                                         Payment Mode:
                                         <span class="fw-bold"><?= validate($orderData['payment_mode']); ?></span>
                                     </label>
-                                    </br>
+                                    <br>
                                 </div>
 
                                 <div class="col-md-6">
@@ -78,17 +78,17 @@ allowedRole([2,3]);
                                         Full Name:
                                         <span class="fw-bold"><?= validate($orderData['customerName']); ?></span>
                                     </label>
-                                    </br>
+                                    <br>
                                     <label class="mb-1">
                                         Email Address:
                                         <span class="fw-bold"><?= validate(decryption($orderData['email'])); ?></span>
                                     </label>
-                                    </br>
+                                    <br>
                                     <label class="mb-1">
                                         Phone Number:
                                         <span class="fw-bold"><?= validate(decryption($orderData['telephone'])); ?></span>
                                     </label>
-                                    </br>
+                                    <br>
                                 </div>
                             </div>
                         </div>
@@ -126,7 +126,7 @@ allowedRole([2,3]);
                                                 <td>
                                                     <img src="<?= $orderItemRow['image'] != '' ? '../' . $orderItemRow['image'] : '../assets/images/no-img.png'; ?>"
                                                         style="width:50px;height:50px;"
-                                                        alt="Img" />
+                                                        alt="<?= htmlspecialchars($orderItemRow['title'], ENT_QUOTES, 'UTF-8') ?> product image" />
                                                     <?= validate($orderItemRow['title']); ?>
                                                 </td>
                                                 <td width="15%" class="fw-bold text-center">

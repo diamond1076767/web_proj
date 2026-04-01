@@ -41,9 +41,9 @@ allowedRole([3]);
                                     <tbody>
                                         <tr>
                                             <td style="text-align: center;" colspan="2">
-                                                <h4 style="font-size: 23px; line-height: 30px; margin: 2px; padding: 0;">SIT Advanced Manufacturing Centre</h4>
-                                                <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">1 Punggol Coast Road,Singapore 828608</p>
-                                                <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">Singapore Institute of Technology</p>
+                                                <h4 style="font-size: 23px; line-height: 30px; margin: 2px; padding: 0;">Singapore Advanced Manufacturing Centre</h4>
+                                                <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">Singapore,Singapore 656667</p>
+                                                <p style="font-size: 16px; line-height: 24px; margin: 2px; padding: 0;">Singapore AMC</p>
                                             </td>
                                         </tr>
                                         <tr>
@@ -58,7 +58,7 @@ allowedRole([3]);
                                                 <h5 style="font-size: 20px; line-height: 30px; margin: 0px; padding: 0;">Invoice Details</h5>
                                                 <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice No.: <?= $invoiceNo ?: '-'; ?></p>
                                                 <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Invoice Date: <?= date('d M Y'); ?></p>
-                                                <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Address: 1 Punggol Coast Road,Singapore 828608</p>
+                                                <p style="font-size: 14px; line-height: 20px; margin: 0px; padding: 0;">Address: Singapore, Singapore 656667</p>
                                             </td>
                                         </tr>
                                     </tbody>

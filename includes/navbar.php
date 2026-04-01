@@ -47,5 +47,3 @@
 		</div>
 	</div>
 </nav>
-
-<div id="main-content"></div>

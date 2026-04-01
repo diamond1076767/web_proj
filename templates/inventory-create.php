@@ -16,9 +16,8 @@ allowedRole([1,2]);
 			
 				<div class="row">
 					<div class="col-md-12 mb-3">
-    					<label class="form-label">Product Name *</label>
-    					<input type="text" name="name" required class="form-control" placeholder="Enter product name"/>
-    				</div>
+						<label for="productName" class="form-label">Product Name *</label>
+						<input type="text" id="productName" name="name" required class="form-control" placeholder="Enter product name"/>
 				
 					<div class="col-md-12 mb-3">
 						<label class="form-label">Select Category</label>

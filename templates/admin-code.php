@@ -33,10 +33,10 @@ allowedRole([1, 2, 3]);
         }
         if (!isPasswordStrong($inputs['password'])) {
             redirect('admin-create.php', 'Password does not meet the requirements:
-            1. The password must be at least 8 characters long.</br>
-                2. The password must contain at least one uppercase letter.</br>
-                3. The password must contain at least one lowercase letter.</br>
-                4. The password must contain at least one numeric digit.</br>
+            1. The password must be at least 8 characters long.<br>
+                2. The password must contain at least one uppercase letter.<br>
+                3. The password must contain at least one lowercase letter.<br>
+                4. The password must contain at least one numeric digit.<br>
                 5. The password must contain at least one special character among the following: !@#$%^&*(),.?":{}|<>');
         }
         $bcryptpassword = password_hash($inputs['password'], PASSWORD_BCRYPT);
@@ -573,11 +573,11 @@ if (isset($_POST['resetBtn'])) {
                 }else{
                     // Check if the password meets the strength criteria
                     if (!isPasswordStrong($password)) {
-                        redirect('admin-create.php', 'Passwords does not meet the requirements: </br>
-                        1. The password must be at least 8 characters long.</br>
-                        2. The password must contain at least one uppercase letter.</br>
-                        3. The password must contain at least one lowercase letter.</br>
-                        4. The password must contain at least one numeric digit.</br>
+                        redirect('admin-create.php', 'Passwords does not meet the requirements: <br>
+                        1. The password must be at least 8 characters long.<br>
+                        2. The password must contain at least one uppercase letter.<br>
+                        3. The password must contain at least one lowercase letter.<br>
+                        4. The password must contain at least one numeric digit.<br>
                         5. The password must contain at least one special character among the following: !@#$%^&*(),.?":{}|<>');
                     }else{
                         $bcryptpassword = password_hash($password, PASSWORD_BCRYPT);
