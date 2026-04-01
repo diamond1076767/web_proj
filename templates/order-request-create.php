@@ -21,22 +21,22 @@ allowedRole([3]);
             <div class="modal-body">
                 <!-- Customer input fields -->
                 <div class="mb-3">
-                    <label>Enter Customer Name*</label>
+                    <label for="c_name">Enter Customer Name*</label>
                     <input type="text" class="form-control" id="c_name" />
                 </div>
 
                 <div class="mb-3">
-                    <label>Enter Company (optional)</label>
+                    <label for="c_company">Enter Company (optional)</label>
                     <input type="text" class="form-control" id="c_company" />
                 </div>
 
                 <div class="mb-3">
-                    <label>Enter Phone No.*</label>
+                    <label for="c_phone">Enter Phone No.*</label>
                     <input type="text" class="form-control" id="c_phone" />
                 </div>
 
                 <div class="mb-3">
-                    <label>Enter Email Address*</label>
+                    <label for="c_email">Enter Email Address*</label>
                     <input type="text" class="form-control" id="c_email" />
                 </div>
             </div>
@@ -67,8 +67,8 @@ allowedRole([3]);
                 <div class="row">
                     <div class="col-md-12 mb-3">
                         <!-- Select Product Dropdown -->
-                        <label for="">Select Product</label>
-                        <select name="product_id" class="form-select mySelect2">
+                        <label for="product_id">Select Product</label>
+                        <select id="product_id" name="product_id" class="form-select mySelect2">
                             <option value="">-- Select Product --</option>
                             <?php
                             $products = getAll('inventory');
@@ -91,8 +91,8 @@ allowedRole([3]);
 
                     <div class="col-md-12 mb-3">
                         <!-- Quantity Input -->
-                        <label for="">Quantity</label>
-                        <input type="number" name="quantity" value="1" class="form-control" />
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" value="1" class="form-control" />
                     </div>
 
                     <div class="col-md-3 mb-3 text-start">
@@ -154,9 +154,9 @@ allowedRole([3]);
                                                                             echo $row['quantity'];
                                                                         }
                                                                         ?>" class="maxQty" />
-                                            <button class="input-group-text decrement">-</button>
+                                            <button class="input-group-text decrement" aria-label="Decrease quantity">-</button>
                                             <input type="text" value="<?= $item['quantity']; ?>" class="qty quantityInput" />
-                                            <button class="input-group-text increment">+</button>
+                                            <button class="input-group-text increment" aria-label="Increase quantity">+</button>
                                         </div>
                                     </td>
                                     <td class="totalPrice"><?= number_format($item['price'] * $item['quantity'], 2); ?></td>
@@ -180,7 +180,7 @@ allowedRole([3]);
 
                         <div class="row">
                             <div class="col-md-4">
-                                <label>Select Payment Mode</label>
+                                <label for="payment_mode">Select Payment Mode</label>
                                 <select name="payment_mode" id="payment_mode" class="form-select" required>
                                     <option value="">-- Select Payment --</option>
                                     <option value="Cash Payment">Cash Payment</option>
@@ -189,7 +189,7 @@ allowedRole([3]);
                             </div>
 
                             <div class="col-md-4">
-                                <label>Enter Customer Phone Number</label>
+                                <label for="cphone">Enter Customer Phone Number</label>
                                 <input type="number" name="cphone" id="cphone" class="form-control" required />
                             </div>
 

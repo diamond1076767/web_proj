@@ -32,13 +32,13 @@ allowedRole([1,2]);
 				        
 				<div class="row">
 					<div class="col-md-12 mb-3">
-    					<label for="">Product Name *</label>
-    					<input type="text" name="name" required value="<?= $product['data']['title'];?>" class="form-control" />
+    					<label for="productName">Product Name *</label>
+    					<input type="text" id="productName" name="name" required value="<?= $product['data']['title'];?>" class="form-control" />
     				</div>
 				
 					<div class="col-md-12 mb-3">
-						<label>Select Category</label>
-						<select name="category_id" class="form-select">
+					<label for="categoryId">Select Category</label>
+					<select id="categoryId" name="category_id" class="form-select">
 							<option value="">Select Category</option>
 							<?php 
 							$categories = getAll('categories');
@@ -65,8 +65,8 @@ allowedRole([1,2]);
 					</div>
 
     				<div class="col-md-12 mb-3">
-						<label>Select Colour</label>
-						<select name="colour_id" class="form-select">
+					<label for="colourId">Select Colour</label>
+					<select id="colourId" name="colour_id" class="form-select">
 							<option value="">Select Colour</option>
 							<?php 
 							$colour = getAll('colour');
@@ -92,30 +92,30 @@ allowedRole([1,2]);
 						</select>
 					</div>
     				<div class="col-md-12 mb-3">
-						<label>Description</label>
-						<br/>
-						<input type="text" name="description" value="<?= $product['data']['description'];?>" class="form-control">
+					<label for="description">Description</label>
+					<br/>
+					<input type="text" id="description" name="description" value="<?= $product['data']['description'];?>" class="form-control">
 					</div>
     				<div class="col-md-4 mb-3">
-						<label>Price *</label>
-						<br/>
-						<input type="text" name="price" required value="<?= $product['data']['cost'];?>" class="form-control">
+					<label for="price">Price *</label>
+					<br/>
+					<input type="text" id="price" name="price" required value="<?= $product['data']['cost'];?>" class="form-control">
 					</div>
 					<div class="col-md-4 mb-3">
-						<label>Quantity *</label>
-						<br/>
-						<input type="text" name="quantity" required value="<?= $product['data']['quantity'];?>" class="form-control">
+					<label for="quantity">Quantity *</label>
+					<br/>
+					<input type="text" id="quantity" name="quantity" required value="<?= $product['data']['quantity'];?>" class="form-control">
 					</div>
 					<div class="col-md-4 mb-3">
-						<label>Image *</label>
-						<input type="file" name="image" class="form-control"/>
+					<label for="productImage">Image *</label>
+					<input type="file" id="productImage" name="image" class="form-control"/>
 						<img src="<?= $product['data']['image'] != '' ? '../' . $product['data']['image'] : '../assets/images/no-img.png'; ?>"
 								style="width:40px;height:40px;" alt="Img" />
 					</div>
 					<div class="col-md-4 mb-3">
-						<label>Status: Hidden</label>
-						<br/>
-						<input type="checkbox" name="status" <?= $product['data']['status'] == true ? 'checked':'';?> style="width:30px;height:30px";>
+					<label for="statusHidden">Status: Hidden</label>
+					<br/>
+					<input type="checkbox" id="statusHidden" name="status" <?= $product['data']['status'] == true ? 'checked':'';?> style="width:30px;height:30px";>
 					</div>
 					<div class="col-md-8 mb-3 text-end">
     					<button type="submit" name="updateProduct" class="btn btn-primary" style="margin-top:15px">Submit</button>	

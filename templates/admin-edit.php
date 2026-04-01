@@ -30,7 +30,7 @@ allowedRole([1]);
 				                <input type='hidden' name='userId' value="<?= $userData['data']['_id']?>">
 				                <div class="row">
 				                	<div class="col-md-12 mb-3">
-                                        <label for="">Role</label>
+                                        <label for="role_id">Role</label>
                                         <?php 
                                             $userId = $userData['data']['_id'];
                                             $query = "SELECT r.roleName FROM user u
@@ -42,41 +42,41 @@ allowedRole([1]);
                                                 $row = mysqli_fetch_assoc($result);
                                                 $roleName = $row['roleName'];
                                                 ?>
-                                                <input type="text" name="role_id" disabled value="<?= $roleName; ?>" class="form-control"/>
+                                                <input type="text" id="role_id" name="role_id" disabled value="<?= $roleName; ?>" class="form-control"/>
                                                 <?php
                                             } else {
-                                                echo '<input type="text" name="role_id" disabled value="Unknown Role" class="form-control"/>';
+                                                echo '<input type="text" id="role_id" name="role_id" disabled value="Unknown Role" class="form-control"/>';
                                             }
                                         ?>
                                     </div>
                 					<div class="col-md-6 mb-3">
-                    					<label for="">Username *</label>
-                    					<input type="text" name="username" required value="<?= $userData['data']['userName'];?>" class="form-control" />
+                    						<label for="username">Username *</label>
+                    						<input type="text" id="username" name="username" required value="<?= $userData['data']['userName'];?>" class="form-control" />
                     				</div>
                     				<div class="col-md-6 mb-3">
-                    					<label for="">Full Name *</label>
-                    					<input type="text" name="fullname" required value="<?= decryption($userData['data']['fullName']);?>" class="form-control" />
+                    						<label for="fullname">Full Name *</label>
+                    						<input type="text" id="fullname" name="fullname" required value="<?= decryption($userData['data']['fullName']);?>" class="form-control" />
                     				</div>
                     				<div class="col-md-6 mb-3">
-                    					<label for="">Email *</label>
-                    					<input type="email" name="email" required value="<?= decryption($userData['data']['email']);?>" class="form-control" />
+                    						<label for="email">Email *</label>
+                    						<input type="email" id="email" name="email" required value="<?= decryption($userData['data']['email']);?>" class="form-control" />
                     				</div>
                     				<div class="col-md-6 mb-3">
-                    					<label for="">Phone Number *</label>
-                    					<input type="number" name="phone" required value="<?= decryption($userData['data']['telephone']);?>" class="form-control" />
+                    						<label for="phone">Phone Number *</label>
+                    						<input type="number" id="phone" name="phone" required value="<?= decryption($userData['data']['telephone']);?>" class="form-control" />
                     				</div>
                     				<div class="col-md-6 mb-3">
-                    					<label for="">Password </label>
-                    					<input type="password" name="password" class="form-control" />	
+                    						<label for="password">Password </label>
+                    						<input type="password" id="password" name="password" class="form-control" />	
                     				</div>
                     				<div class="col-md-6 mb-3">
-                    					<label for="">Confirm Password </label>
-                    					<input type="password" name="confirmpassword" class="form-control" />	
+                    						<label for="confirmpassword">Confirm Password </label>
+                    						<input type="password" id="confirmpassword" name="confirmpassword" class="form-control" />	
                     				</div>
                     				<div class="col-md-6 mb-3">
-                    					<label for="">Lock Account</label>
+                    						<label for="lock_acc">Lock Account</label>
                                        <br/>
-                    					<input type="checkbox" name="lock_acc" <?=$userData['data']['lock_acc'] == true ? 'checked':''?> style="width:30px;height:30px;" />
+                    						<input type="checkbox" id="lock_acc" name="lock_acc" <?=$userData['data']['lock_acc'] == true ? 'checked':''?> style="width:30px;height:30px;" />
                     				</div>
                     				<div class="col-md-6 mb-3 text-end">
                     					<button type="submit" name="updateUser" class="btn btn-primary" style="margin-top:10px">Submit</button>

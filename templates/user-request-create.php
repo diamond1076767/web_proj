@@ -55,13 +55,13 @@ allowedRole([2]);
                     </div>
                     
                     <div class="col-md-6 mb-3">
-                        <label for="">Username *</label>
-                        <input type="text" name="username" required class="form-control" />
+                        <label for="username">Username *</label>
+                        <input type="text" id="username" name="username" required class="form-control" />
                     </div>
                 
                     <div class="col-md-6 mb-3">
-                        <label for="">Full Name *</label>
-                        <input type="text" name="fullname" required class="form-control" />
+                        <label for="fullname">Full Name *</label>
+                        <input type="text" id="fullname" name="fullname" required class="form-control" />
                     </div>
 
                     <div class="col-md-6 mb-3">

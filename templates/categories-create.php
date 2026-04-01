@@ -15,13 +15,13 @@ allowedRole([1,2]);
 			
 				<div class="row">
 					<div class="col-md-12 mb-3">
-    					<label for="">Category Name *</label>
-    					<input type="text" name="name" required class="form-control" />
+    					<label for="categoryName">Category Name *</label>
+    					<input type="text" id="categoryName" name="name" required class="form-control" />
     				</div>
 					<div class="col-md-6">
-						<label>Status: Hidden</label>
-						<br/>
-						<input type="checkbox" name="status" style="width:30px;height:30px";>
+					<label for="status">Status: Hidden</label>
+					<br/>
+					<input type="checkbox" id="status" name="status" style="width:30px;height:30px";>
 					</div>
     				<div class="col-md-6 mb-3 text-end">
     				<br/>

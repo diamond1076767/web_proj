@@ -14,8 +14,8 @@ allowedRole([1]);
 			<form action="admin-code.php" method="POST">
 				<div class="row">
 					<div class="col-md-12 mb-3">
-                        <label for="">Select User Role</label>
-                        <select name="role_id" class="form-select mySelect2">
+                        <label for="role_id">Select User Role</label>
+                        <select id="role_id" name="role_id" class="form-select mySelect2">
                             <option value="">-- Select User Role --</option>
                             <?php
                             $query = "SELECT * FROM role WHERE _id <> 1";
@@ -39,33 +39,33 @@ allowedRole([1]);
                         </select>
                     </div>
 					<div class="col-md-6 mb-3">
-    					<label for="">Username *</label>
-    					<input type="text" name="username" required class="form-control" />
+    						<label for="username">Username *</label>
+    						<input type="text" id="username" name="username" required class="form-control" />
     				</div>
     				<div class="col-md-6 mb-3">
-    					<label for="">Full Name *</label>
-    					<input type="text" name="fullname" required class="form-control" />
+    					<label for="fullname">Full Name *</label>
+    					<input type="text" id="fullname" name="fullname" required class="form-control" />
     				</div>
     				<div class="col-md-6 mb-3">
-    					<label for="">Email Address *</label>
-    					<input type="email" name="email" required class="form-control" />
+    					<label for="email">Email Address *</label>
+    					<input type="email" id="email" name="email" required class="form-control" />
     				</div>
     				<div class="col-md-6 mb-3">
-    					<label for="">Phone Number *</label>
-    					<input type="text" name="phone" required class="form-control" />
+    					<label for="phone">Phone Number *</label>
+    					<input type="text" id="phone" name="phone" required class="form-control" />
     				</div>
     				<div class="col-md-6 mb-3">
-    					<label for="">Password *</label>
-    					<input type="password" name="password" required class="form-control" />
+    					<label for="password">Password *</label>
+    					<input type="password" id="password" name="password" required class="form-control" />
     				</div>
     				<div class="col-md-6 mb-3">
-    					<label for="">Confirm Password *</label>
-    					<input type="password" name="confirmpassword" required class="form-control" />
+    					<label for="confirmpassword">Confirm Password *</label>
+    					<input type="password" id="confirmpassword" name="confirmpassword" required class="form-control" />
     				</div>
     				<div class="col-md-6 mb-3">
-    					<label for="">Lock Account</label>
+    					<label for="lock_acc">Lock Account</label>
     					<br/>
-    					<input type="checkbox" name="lock_acc" value="1" style="width:30px;height:30px;">
+    					<input type="checkbox" id="lock_acc" name="lock_acc" value="1" style="width:30px;height:30px;">
     				</div>
     				<div class="col-md-6 mb-3 text-end">
     					<button type="submit" name="createUser" class="btn btn-primary" style="margin-top:10px">Submit</button>

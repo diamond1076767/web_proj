@@ -98,9 +98,9 @@ allowedRole([1,2]);
                                             }
                                         ?>" class="maxQty" />
                                         
-                                        <button class="input-group-text decrement">-</button>
+                                        <button class="input-group-text decrement" aria-label="Decrease quantity">-</button>
                                         <input type="text" value="<?= $item['quantity']; ?>" class="qty quantityInput" />
-                                        <button class="input-group-text increment">+</button>
+                                        <button class="input-group-text increment" aria-label="Increase quantity">+</button>
                                     </div>
                                 </td>
                                 <td><?= number_format($item['price'] * $item['quantity'], 2);?></td>

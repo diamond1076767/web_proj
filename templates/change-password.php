@@ -14,13 +14,13 @@ allowedRole([1,2,3]);
                         <h4 class="text-dark mb-3">Update Your Password</h4>
                         <form action="admin-code.php" method="POST"> 
                             <div class="mb-3">
-                                <label>Password</label>
-                                <input type="password" name="pass" class="form-control" required/>
+                                <label for="pass">Password</label>
+                                <input type="password" id="pass" name="pass" class="form-control" required/>
                             </div>
 
                             <div class="mb-3">
-                                <label>Confirm Password</label>
-                                <input type="password" name="conpass" class="form-control" required/>
+                                <label for="conpass">Confirm Password</label>
+                                <input type="password" id="conpass" name="conpass" class="form-control" required/>
                             </div>
                             <div class="mb-3">
                                 <button type="submit" name="resetBtn" class="btn btn-primary w-100 mt-2">
