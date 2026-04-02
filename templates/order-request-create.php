@@ -8,7 +8,7 @@ allowedRole([3]);
     var roleID = <?= $_SESSION['loggedInUser']['roleID'] ?? 0 ?>;
 </script>
 
-<div class="modal fade" id="addCustomerModal" data-bs-backdrop='static' data-bs-keyboard='false' tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addCustomerModal" data-bs-backdrop='static' data-bs-keyboard='false' tabindex="-1" aria-hidden="true">
     <!-- Modal Dialog -->
     <div class="modal-dialog">
         <!-- Modal Content -->
