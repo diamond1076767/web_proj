@@ -30,7 +30,7 @@ allowedRole([1]);
 				                <input type='hidden' name='userId' value="<?= $userData['data']['_id']?>">
 				                <div class="row">
 				                	<div class="col-md-12 mb-3">
-                                        <label for="role_id">Role</label>
+                                        <label>Role</label>
                                         <?php 
                                             $userId = $userData['data']['_id'];
                                             $query = "SELECT r.roleName FROM user u
@@ -42,10 +42,10 @@ allowedRole([1]);
                                                 $row = mysqli_fetch_assoc($result);
                                                 $roleName = $row['roleName'];
                                                 ?>
-                                                <input type="text" id="role_id" name="role_id" disabled value="<?= $roleName; ?>" class="form-control"/>
+                                                <input type="text" disabled value="<?= $roleName; ?>" class="form-control"/>
                                                 <?php
                                             } else {
-                                                echo '<input type="text" id="role_id" name="role_id" disabled value="Unknown Role" class="form-control"/>';
+                                                echo '<input type="text" disabled value="Unknown Role" class="form-control"/>';
                                             }
                                         ?>
                                     </div>

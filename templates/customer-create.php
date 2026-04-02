@@ -18,25 +18,25 @@ allowedRole([1,2,3]);?>
                     <!-- Customer Name Input -->
                     <div class="col-md-12 mb-3">
                         <label for="name">Customer Name *</label>
-                        <input type="text" name="name" required class="form-control">
+                        <input type="text" id="name" name="name" required class="form-control">
                     </div>
 
                     <!-- Company Name Input -->
                     <div class="col-md-12 mb-3">
                         <label for="companyName">Company *</label> <br />
-                        <input type="text" name="companyName" required class="form-control">
+                        <input type="text" id="companyName" name="companyName" required class="form-control">
                     </div>
 
                     <!-- Email Input -->
                     <div class="col-md-12 mb-3">
                         <label for="email">Email *</label> <br />
-                        <input type="email" name="email" required class="form-control">
+                        <input type="email" id="email" name="email" required class="form-control">
                     </div>
 
                     <!-- Telephone Input -->
                     <div class="col-md-12 mb-3">
                         <label for="phone">Telephone *</label> <br />
-                        <input type="text" name="phone" required class="form-control">
+                        <input type="text" id="phone" name="phone" required class="form-control">
                     </div>
 
                     <!-- Submit Button -->

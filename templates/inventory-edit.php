@@ -110,12 +110,12 @@ allowedRole([1,2]);
 					<label for="productImage">Image *</label>
 					<input type="file" id="productImage" name="image" class="form-control"/>
 						<img src="<?= $product['data']['image'] != '' ? '../' . $product['data']['image'] : '../assets/images/no-img.png'; ?>"
-								style="width:40px;height:40px;" alt="Img" />
+								style="width:40px;height:40px;" alt="<?= htmlspecialchars($product['data']['title'], ENT_QUOTES, 'UTF-8') ?> product image" />
 					</div>
 					<div class="col-md-4 mb-3">
 					<label for="statusHidden">Status: Hidden</label>
 					<br/>
-					<input type="checkbox" id="statusHidden" name="status" <?= $product['data']['status'] == true ? 'checked':'';?> style="width:30px;height:30px";>
+					<input type="checkbox" id="statusHidden" name="status" <?= $product['data']['status'] == true ? 'checked':'';?> style="width:30px;height:30px;">
 					</div>
 					<div class="col-md-8 mb-3 text-end">
     					<button type="submit" name="updateProduct" class="btn btn-primary" style="margin-top:15px">Submit</button>	

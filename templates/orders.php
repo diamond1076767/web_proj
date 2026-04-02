@@ -15,7 +15,7 @@ allowedRole([1,2,3]);
                 </div>
                 <div class="col-md-8">
                     <!-- Form for filtering orders based on date and payment status -->
-                    <form action="" method="GET">
+                    <form method="GET">
                         <div class="row g-1">
                             <!-- Date input -->
                             <div class="col-md-4">

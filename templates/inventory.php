@@ -45,7 +45,7 @@ allowedRole([1,2,3]);
 									<td>
 										<img src="<?= $item['image'] != '' ? '../' . $item['image'] : '../assets/images/no-img.png'; ?>"
 											style="width:50px;height:50px;"
-											alt="Img" />
+											alt="<?= htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') ?> product image" />
 									</td>
 									<td><?= $item['title'] ?></td>
 									<td>
