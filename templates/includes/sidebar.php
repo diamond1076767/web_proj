@@ -4,7 +4,7 @@ $roleID = $_SESSION['loggedInUser']['roleID'] ?? 0;
 ?>
 
 <div id="layoutSidenav_nav">
-	<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+	<nav class="sb-sidenav accordion sb-sidenav-dark" aria-label="Side navigation bar" id="sidenavAccordion">
 		<div class="sb-sidenav-menu">
 			<div class="nav">
 

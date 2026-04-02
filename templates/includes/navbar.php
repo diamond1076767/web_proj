@@ -1,8 +1,8 @@
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark" aria-label="Top navigation bar">
 	<!-- Sidebar Toggle-->
 	<button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" aria-label="Toggle navigation" style="margin-left: 15px; margin-top: 2px;font-size: 20px"><i class="fas fa-bars"></i></button>
     <!-- Navbar Brand-->
-	<a class="navbar-brand ps-3" href="index.php">SG AMC</a>
+	<a class="navbar-brand ps-3" href="index.php"><h1>SG AMC</h1></a>
     <!-- Navbar Search-->
 	<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
 	</form>

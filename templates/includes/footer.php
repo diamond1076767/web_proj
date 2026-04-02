@@ -1,9 +1,9 @@
 				</main>
 
-                <footer class="py-4 bg-light mt-auto">
+                <footer class="py-4 bg-light text-dark mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; INF1005 Lab P1-7 Project</div>
+                            <div>Copyright &copy; INF1005 Lab P1-7 Project</div>
                         </div>
                     </div>
                 </footer>
