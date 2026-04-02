@@ -17,10 +17,10 @@ allowedRole([2]);
                 <div class="row">
                 
                     <div class="col-md-4 mb-3">
-                        <label>Request Role</label>
+                        <label for="role_id">Request Role</label>
                         <br/>
                         <!-- Displaying the requested role (in this case, role with ID 3) -->
-                        <input type="text" name="role_id" disabled class="form-control" value="<?php 
+                        <input type="text" id="role_id" name="role_id" disabled class="form-control" value="<?php 
                             $query = "SELECT * FROM role WHERE _id = 3";
                             $role = mysqli_query($con, $query);
                             if ($role){
@@ -37,9 +37,9 @@ allowedRole([2]);
                     </div>
                 
                     <div class="col-md-4 mb-3">
-                        <label>Requested By</label>
+                        <label for="requesterName">Requested By</label>
                         <!-- Displaying the username of the logged-in user (locked) -->
-                        <input type="text" name="requesterName" disabled class="form-control" value="<?php
+                        <input id="requesterName" type="text" name="requesterName" disabled class="form-control" value="<?php
                             if (isset($_SESSION['loggedIn'])) {
                                 echo $_SESSION['loggedInUser']['username'];
                             }
@@ -48,10 +48,10 @@ allowedRole([2]);
 
                     
                     <div class="col-md-4 mb-3">
-                        <label>Create Date</label>
+                        <label for="request_date">Create Date</label>
                         <br/>
                         <!-- Displaying the current date -->
-                        <input type="text" name="date" disabled class="form-control" value="<?php echo date('j F, Y')?>">
+                        <input id="request_date" type="text" name="date" disabled class="form-control" value="<?php echo date('j F, Y')?>">
                     </div>
                     
                     <div class="col-md-6 mb-3">
@@ -65,16 +65,16 @@ allowedRole([2]);
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label>Email *</label>
+                        <label for="email">Email *</label>
                         <br/>
-                        <input type="email" name="email" required class="form-control">
+                        <input id="email" type="email" name="email" required class="form-control">
                     </div>
 
                 
                     <div class="col-md-6 mb-3">
-                        <label>Phone No. *</label>
+                        <label for="telephone">Phone No. *</label>
                         <br/>
-                        <input type="text" name="telephone" required class="form-control">
+                        <input id="telephone" type="text" name="telephone" required class="form-control">
                     </div>
                     
                     <div class="col-md-8 mb-3 text-start">

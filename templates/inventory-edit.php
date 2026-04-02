@@ -38,7 +38,7 @@ allowedRole([1,2]);
 				
 					<div class="col-md-12 mb-3">
 					<label for="categoryId">Select Category</label>
-					<select id="categoryId" name="category_id" class="form-select">
+				<select id="categoryId" name="category_id" class="form-select" aria-label="Select category">
 							<option value="">Select Category</option>
 							<?php 
 							$categories = getAll('categories');
@@ -66,7 +66,7 @@ allowedRole([1,2]);
 
     				<div class="col-md-12 mb-3">
 					<label for="colourId">Select Colour</label>
-					<select id="colourId" name="colour_id" class="form-select">
+				<select id="colourId" name="colour_id" class="form-select" aria-label="Select colour">
 							<option value="">Select Colour</option>
 							<?php 
 							$colour = getAll('colour');

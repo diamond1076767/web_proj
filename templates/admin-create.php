@@ -15,7 +15,7 @@ allowedRole([1]);
 				<div class="row">
 					<div class="col-md-12 mb-3">
                         <label for="role_id">Select User Role</label>
-                        <select id="role_id" name="role_id" class="form-select mySelect2">
+                        <select id="role_id" name="role_id" class="form-select mySelect2" aria-label="Select user role">
                             <option value="">-- Select User Role --</option>
                             <?php
                             $query = "SELECT * FROM role WHERE _id <> 1";

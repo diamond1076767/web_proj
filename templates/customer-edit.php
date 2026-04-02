@@ -40,23 +40,23 @@ allowedRole([1,2,3]);
     
                 <div class="row">
                     <div class="col-md-12 mb-3">
-                        <label>Customer Name *</label>
-                        <input type="text" name="name" value="<?= validate($customerData['customerName']); ?>" required class="form-control" />
+                        <label for="customerName">Customer Name *</label>
+                        <input id="customerName" type="text" name="name" value="<?= validate($customerData['customerName']); ?>" required class="form-control" />
                     </div>
 
                     <div class="col-md-12 mb-3">
-                        <label>Company *</label>
-                        <input type="text" name="companyName" value="<?= validate($customerData['companyName']); ?>" required class="form-control">
+                        <label for="companyName">Company *</label>
+                        <input id="companyName" type="text" name="companyName" value="<?= validate($customerData['companyName']); ?>" required class="form-control">
                     </div>                  
 
                     <div class="col-md-12 mb-3">
-                        <label>Email *</label> 
-                        <input type="email" name="email" value="<?= validate(decryption($customerData['email'])); ?>" required class="form-control">
+                        <label for="customerEmail">Email *</label> 
+                        <input id="customerEmail" type="email" name="email" value="<?= validate(decryption($customerData['email'])); ?>" required class="form-control">
                     </div>
 
                     <div class="col-md-12 mb-3">
-                        <label>Telephone *</label> 
-                        <input type="text" name="phone" value="<?= validate(decryption($customerData['telephone'])); ?>" required class="form-control">
+                        <label for="customerPhone">Telephone *</label> 
+                        <input id="customerPhone" type="text" name="phone" value="<?= validate(decryption($customerData['telephone'])); ?>" required class="form-control">
                     </div>
 
                     <div class="col-md-12 mb-3 text-start">

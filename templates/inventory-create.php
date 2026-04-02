@@ -20,8 +20,8 @@ allowedRole([1,2]);
 						<input type="text" id="productName" name="name" required class="form-control" placeholder="Enter product name"/>
 				
 					<div class="col-md-12 mb-3">
-						<label class="form-label">Select Category</label>
-						<select required name="category_id" class="form-select">
+						<label for="category_id">Select Category</label>
+						<select id="category_id" required name="category_id" class="form-select" aria-label="Select category">
 							<option value="" selected disabled>Choose a category...</option>
 							<?php 
                             $categories = getAll('categories');
@@ -37,8 +37,8 @@ allowedRole([1,2]);
 					</div>
 
     				<div class="col-md-12 mb-3">
-						<label class="form-label">Select Colour</label>
-						<select required name="colour_id" class="form-select">
+						<label for="colour_id">Select Colour</label>
+						<select id="colour_id" required name="colour_id" class="form-select" aria-label="Select colour">
 							<option value="" selected disabled>Choose a colour...</option>
 							<?php 
                             $colour = getAll('colour');
@@ -53,20 +53,20 @@ allowedRole([1,2]);
 						</select>
 					</div>
     				<div class="col-md-12 mb-3">
-                        <label class="form-label">Description</label>
-                        <textarea name="description" class="form-control" rows="3" placeholder="Enter product details"></textarea>
+                        <label for="description" class="form-label">Description</label>
+                        <textarea id="description" name="description" class="form-control" rows="3" placeholder="Enter product details"></textarea>
                     </div>
     				<div class="col-md-4 mb-3">
-						<label class="form-label">Price *</label>
-						<input type="number" name="price" step="0.01" required class="form-control"placeholder="0.00">
+						<label for="price" class="form-label">Price *</label>
+						<input id="price" type="number" name="price" step="0.01" required class="form-control" placeholder="0.00">
 					</div>
 					<div class="col-md-4 mb-3">
-						<label class="form-label">Quantity *</label>
-						<input type="number" name="quantity" step="1" required class="form-control" placeholder="0">
+						<label for="quantity" class="form-label">Quantity *</label>
+						<input id="quantity" type="number" name="quantity" step="1" required class="form-control" placeholder="0">
 					</div>
 					<div class="col-md-4 mb-3">
-                        <label class="form-label">Product Image</label>
-                        <input type="file" name="image" accept="image/*" class="form-control" >
+                        <label for="image" class="form-label">Product Image</label>
+                        <input id="image" type="file" name="image" accept="image/*" class="form-control" >
                     </div>
 					<div class="col-md-4 mb-3">
                         <div class="form-check form-switch mt-2">

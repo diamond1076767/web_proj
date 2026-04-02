@@ -22,6 +22,7 @@ allowedRole([1, 2]);
 						<div class="row g-1">
 							<div class="col-md-4">
 								<input type="date"
+									aria-label="Filter by date"
 									name="date"
 									class="form-control"
 									value="<?= isset($_GET['date']) == true ? $_GET['date'] : ''; ?>" />
@@ -29,9 +30,7 @@ allowedRole([1, 2]);
 
 							<?php if ($sessionRole == 1 || $sessionRole == 2): ?>
 								<div class="col-md-4">
-									<select name="role_status" class="form-select">
-										<option value="">Select User Role</option>
-
+							<select name="role_status" class="form-select" aria-label="Select user role">
 										<?php if ($sessionRole == 1): ?>
 											<!-- Only Admin can see Manager -->
 											<option value="Manager"

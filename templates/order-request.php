@@ -51,10 +51,11 @@ $orders = mysqli_query($con, $query);
                                 <input type="date"
                                     name="date"
                                     class="form-control"
+                                    aria-label="Filter by date"
                                     value="<?= htmlspecialchars($createDate); ?>" />
                             </div>
                             <div class="col-md-4">
-                                <select name="request_status" class="form-select">
+                                <select name="request_status" class="form-select" aria-label="Filter by request status">
                                     <option value="">Select Request Status</option>
                                     <?php foreach (['Pending', 'Approved', 'Declined'] as $status): ?>
                                         <option value="<?= $status ?>" <?= $requestStatus == $status ? 'selected' : ''; ?>>

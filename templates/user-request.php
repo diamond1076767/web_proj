@@ -14,12 +14,13 @@ allowedRole([1, 2]);
 						<div class="row g-1">
 							<div class="col-md-4">
 								<input type="date"
+								aria-label="Filter by date"
 									name="date"
 									class="form-control"
 									value="<?= isset($_GET['date']) ? $_GET['date'] : ''; ?>" />
 							</div>
 							<div class="col-md-4">
-								<select name="request_status" class="form-select">
+								<select name="request_status" class="form-select" aria-label="Request Status">
 									<option value="">Select Request Status</option>
 									<?php
 									$statuses = ['Pending', 'Approved', 'Declined'];

@@ -11,10 +11,10 @@ allowedRole([1,2]);
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3"><label>Enter Customer Name*</label><input type="text" class="form-control" id="c_name" /></div>
-        <div class="mb-3"><label>Enter Company (optional)</label><input type="text" class="form-control" id="c_company" /></div>
-        <div class="mb-3"><label>Enter Phone No.*</label><input type="text" class="form-control" id="c_phone" /></div>
-        <div class="mb-3"><label>Enter Email Address*</label><input type="text" class="form-control" id="c_email" /></div>
+        <div class="mb-3"><label for="c_name">Enter Customer Name*</label><input type="text" id="c_name" class="form-control" /></div>
+        <div class="mb-3"><label for="c_company">Enter Company (optional)</label><input type="text" id="c_company" class="form-control" /></div>
+        <div class="mb-3"><label for="c_phone">Enter Phone No.*</label><input type="text" id="c_phone" class="form-control" /></div>
+        <div class="mb-3"><label for="c_email">Enter Email Address*</label><input type="text" id="c_email" class="form-control" /></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -34,8 +34,8 @@ allowedRole([1,2]);
             <form action="order-code.php" method="POST">
                 <div class="row">
                     <div class="col-md-12 mb-3">
-                        <label>Select Product</label> 
-                        <select name="product_id" class="form-select mySelect2">
+                        <label for="product_id">Select Product</label> 
+                        <select id="product_id" name="product_id" class="form-select mySelect2" aria-label="Select product">
                             <option value="" selected disabled>-- Select Product --</option>
                             <?php
                             $products = getAll('inventory');
@@ -51,8 +51,8 @@ allowedRole([1,2]);
                         </select>
                     </div>
                     <div class="col-md-12 mb-3">
-                        <label>Quantity</label> 
-                        <input type="number" name="quantity" value="1" min="1" class="form-control" required />
+                        <label for="quantity">Quantity</label> 
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control" aria-label="Enter quantity" required />
                     </div>
                     <div class="col-md-3 mb-3 text-start">
                         <br/><button type="submit" name="addItem" class="btn btn-primary">Add Item</button>
@@ -99,7 +99,7 @@ allowedRole([1,2]);
                                         ?>" class="maxQty" />
                                         
                                         <button class="input-group-text decrement" aria-label="Decrease quantity">-</button>
-                                        <input type="text" value="<?= $item['quantity']; ?>" class="qty quantityInput" />
+                                        <input type="text" value="<?= $item['quantity']; ?>" class="qty quantityInput" aria-label="Item quantity" />
                                         <button class="input-group-text increment" aria-label="Increase quantity">+</button>
                                     </div>
                                 </td>
@@ -117,8 +117,8 @@ allowedRole([1,2]);
                         <input type="hidden" name="proceedToPlaceBtn" value="1">
                         <div class="row">
                             <div class="col-md-4">
-                                <label>Select Payment Mode</label>
-                                <select name="payment_mode" id="payment_mode" class="form-select" required>
+                                <label for="payment_mode">Select Payment Mode</label>
+                                <select name="payment_mode" id="payment_mode" class="form-select" aria-label="Select payment mode" required>
                                     <option value="" selected disabled>-- Select Payment --</option>
                                     <option value="Cash Payment">Cash Payment</option>
                                     <option value="Online Payment">Online Payment</option>
@@ -126,8 +126,8 @@ allowedRole([1,2]);
                             </div>
 
                             <div class="col-md-4">
-                                <label>Enter Customer Phone Number</label>
-                                <input type="text" name="cphone" id="cphone" class="form-control" required />
+                                <label for="cphone">Enter Customer Phone Number</label>
+                                <input type="text" name="cphone" id="cphone" class="form-control" aria-label="Customer phone number" required />
                             </div>
 
                             <div class="col-md-4">

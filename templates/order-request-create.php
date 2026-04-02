@@ -68,7 +68,7 @@ allowedRole([3]);
                     <div class="col-md-12 mb-3">
                         <!-- Select Product Dropdown -->
                         <label for="product_id">Select Product</label>
-                        <select id="product_id" name="product_id" class="form-select mySelect2">
+                        <select id="product_id" name="product_id" class="form-select mySelect2" aria-label="Select product">
                             <option value="">-- Select Product --</option>
                             <?php
                             $products = getAll('inventory');
@@ -155,7 +155,7 @@ allowedRole([3]);
                                                                         }
                                                                         ?>" class="maxQty" />
                                             <button class="input-group-text decrement" aria-label="Decrease quantity">-</button>
-                                            <input type="text" value="<?= $item['quantity']; ?>" class="qty quantityInput" />
+                                            <input type="text" value="<?= $item['quantity']; ?>" class="qty quantityInput" aria-label="Item quantity" />
                                             <button class="input-group-text increment" aria-label="Increase quantity">+</button>
                                         </div>
                                     </td>
@@ -181,7 +181,7 @@ allowedRole([3]);
                         <div class="row">
                             <div class="col-md-4">
                                 <label for="payment_mode">Select Payment Mode</label>
-                                <select name="payment_mode" id="payment_mode" class="form-select" required>
+                                <select name="payment_mode" id="payment_mode" class="form-select" aria-label="Select payment mode" required>
                                     <option value="">-- Select Payment --</option>
                                     <option value="Cash Payment">Cash Payment</option>
                                     <option value="Online Payment">Online Payment</option>
@@ -190,7 +190,7 @@ allowedRole([3]);
 
                             <div class="col-md-4">
                                 <label for="cphone">Enter Customer Phone Number</label>
-                                <input type="number" name="cphone" id="cphone" class="form-control" required />
+                                <input type="number" name="cphone" id="cphone" class="form-control" aria-label="Customer phone number" required />
                             </div>
 
                             <div class="col-md-4">

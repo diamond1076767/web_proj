@@ -22,12 +22,13 @@ allowedRole([1,2,3]);
                                 <input type="date" 
                                     name="date" 
                                     class="form-control"
+                                    aria-label="Filter by date"
                                     value="<?= isset($_GET['date']) == true ? validate($_GET['date']) : ''; ?>"
                                 />
                             </div>
                             <!-- Payment status dropdown -->
                             <div class="col-md-4">
-                                <select name="payment_status" class="form-select">
+                                <select name="payment_status" class="form-select" aria-label="Filter by payment status">
                                     <option value="">
                                         Select Payment Status
                                     </option>
